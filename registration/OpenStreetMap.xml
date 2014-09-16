@@ -1,0 +1,20 @@
+<searchresults timestamp="Sat, 07 Nov 09 14:42:10 +0000" querystring="135 pilkington, avenue birmingham" polygon="true">
+   <place
+     place_id="1620612" osm_type="node" osm_id="452010817"
+     boundingbox="52.548641204834,52.5488433837891,-1.81612110137939,-1.81592094898224"
+     polygonpoints="[['-1.81592098644987','52.5487429714954'],['-1.81592290792183','52.5487234624632'],...]"
+     lat="52.5487429714954" lon="-1.81602098644987"
+     display_name="135, Pilkington Avenue, Wylde Green, City of Birmingham, West Midlands (county), B72, United Kingdom"
+     class="place" type="house">
+     <house>135</house>
+     <geokml>-3.6870437,50.432299100000002</geokml>
+     <road>Pilkington Avenue</road>
+     <village>Wylde Green</village>
+     <town>Sutton Coldfield</town>
+     <city>City of Birmingham</city>
+     <county>West Midlands (county)</county>
+     <postcode>B72</postcode>
+     <country>United Kingdom</country>
+     <country_code>gb</country_code>
+   </place>
+ </searchresults>

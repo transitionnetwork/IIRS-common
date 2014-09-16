@@ -1,0 +1,135 @@
+#IIRS_0_debug > pre {
+  font-size:10px;
+  line-height:11px;
+  padding:0px;
+  display:none;
+  background-color:#ffefef;
+  border:1px dotted red;
+}
+
+#IIRS_0_language_control {
+  font-size:11px;
+  float:right;
+}
+
+/* ---------------------------------------------------------------- IIRS base list selection CSS: override by host */
+#IIRS_0_list_selector {
+  border-top:1px solid #d7d7d7;
+  font-size:18px;
+  color:#555555;
+  list-style:none;
+  padding-left:0px;
+  margin-left:0px;
+}
+#IIRS_0_list_selector li {
+  min-height:70px;
+  margin:0;
+  padding:0;
+  background:none;
+  background-color:#fdffcb;
+  border-bottom:1px solid #d7d7d7;
+  border-right:1px solid #d7d7d7;
+  border-left:1px solid #d7d7d7;
+}
+#IIRS_0_list_selector .selected {
+  font-weight:bold;
+  background-color:#faffab;
+  border-right:1px solid #a7a7a7;
+  border-bottom:1px solid #a7a7a7;
+}
+#IIRS_0_list_selector .IIRS_0_message {
+  padding-left:42px;
+  border-bottom:none;
+}
+#IIRS_0_list_selector li .IIRS_0_radio {
+  min-height:70px;
+  float:left;
+  padding:0px;
+  margin:0px 14px;
+}
+#IIRS_0_list_selector li label {
+  cursor:pointer;
+  display:block;
+  width:100%;
+  min-height:70px;
+  /* white-space:nowrap; */
+  padding-top:2px;
+}
+body #IIRS_0_list_selector .IIRS_0_button {
+  max-height:20px;
+  line-height:18px;
+  font-size:12px;
+  padding:1px 5px;
+  margin-right:2px;
+}
+#IIRS_0_list_selector #IIRS_0_other {
+  line-height:50px;
+  padding-left:42px;
+}
+
+
+/* ------------------------ when IIRS has to show it's own messages */
+.IIRS_0_bare_list {
+  list-style:none;
+  margin-left:0px;
+}
+.IIRS_0_status {
+  color:#666666;
+  font-size:14px;
+  font-weight:normal;
+  line-height:15px;
+}
+.IIRS_0_message {
+  position:relative;
+  padding-left:42px;
+  background-color:#faffab;
+  border:1px solid #d7d7d7;
+}
+.IIRS_0_message img {
+  position:absolute;
+  top:2px;
+  left:4px;
+}
+.IIRS_0_warning { /* used by the no javascript message only */
+  background-color:yellow;
+  border:1px solid #555555;
+  color:#555555;
+  padding:3px;
+  font-size:11px;
+  margin:10px;
+}
+#IIRS_0 .IIRS_0_error_back {
+  font-weight:bold;
+  display:block;
+}
+.IIRS_0_back {
+  /* remove for now: need a stack to progressively move down... */
+  display:none;
+}
+
+/* ------------------------ IIRS layout utility classes */
+.IIRS_0_clear {
+  clear:both;
+}
+.IIRS_0_horizontal_section {
+  width:100%;
+  clear:both;
+}
+.IIRS_0_textarea {
+  width:100%;
+  min-height:100px;
+}
+
+/* ------------------------ IIRS graphic design, minimal and overridden by host if wanted */
+.IIRS_0_hint {
+  color:#aaaaaa;
+}
+.IIRS_0_validation_fail {
+  border:1px solid red;
+}
+.IIRS_0_bigbutton {
+  height:40px;
+}
+.IIRS_0_reason {
+  color:#666666;
+}
