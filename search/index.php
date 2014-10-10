@@ -16,7 +16,7 @@ $listTIs = '';
   </style>
 
   <div class="IIRS_0_h1"><?php IIRS_0_print_translation('search the transition towns of the world'); ?>
-    <?php printLanguageSelector(); ?>
+    <?php IIRS_0_print_language_selector(); ?>
   </div>
   <ul id="list">
     <?php print($listTIs); ?>

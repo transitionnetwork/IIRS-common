@@ -25,7 +25,7 @@ print($debug_environment);
 
   <script type="text/javascript">
     var map, mapOptions;
-    <?php IIRS_0_print_javascript_variable('sGoogleAPIKey', $GoogleAPIKey); ?>
+    <?php IIRS_0_print_javascript_variable('sGoogleAPIKey', $google_API_key); ?>
 
     jQuery(document).ready(function(e){
       var script   = document.createElement("script");
@@ -39,7 +39,7 @@ print($debug_environment);
       var oTI;
 
       mapOptions = {
-        center: new google.maps.LatLng(<?php print("$defaultLat, $defaultLng"); ?>),
+        center: new google.maps.LatLng(<?php print("$default_lat, $default_lng"); ?>),
         zoom: 8
       };
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
@@ -73,7 +73,7 @@ print($debug_environment);
 
   <!-- intial form -->
   <div class="IIRS_0_h1"><?php IIRS_0_print_translation('mappings of transition towns around the world'); ?>
-    <?php printLanguageSelector(); ?>
+    <?php IIRS_0_print_language_selector(); ?>
   </div>
   <div id="map-canvas">map loading...</div>
 </div>

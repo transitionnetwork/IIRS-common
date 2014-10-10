@@ -29,7 +29,7 @@ if ($domain_entered) {
 
   if ($valid_dns) {
     print("DNS valid, updating domain to [$domain]\n");
-    IIRS_0_TI_updateTI(array('domain' => $domain));
+    IIRS_0_TI_update_TI(array('domain' => $domain));
 
     print("whois lookup of [$domain]...\n");
     if ($aEntries = whois($domain)) {
@@ -40,14 +40,14 @@ if ($domain_entered) {
 
       //location lookup
       //TODO: Open Street Map does not support post codes!
-      //if ($sRegistrantPostalCode && $sRegistrantCountry) $townname = "$sRegistrantPostalCode, $sRegistrantCountry";
+      //if ($sRegistrantPostalCode && $sRegistrantCountry) $town_name = "$sRegistrantPostalCode, $sRegistrantCountry";
       /*
-      if ($sRegistrantCity)       $townname = "$sRegistrantCity";
+      if ($sRegistrantCity)       $town_name = "$sRegistrantCity";
       else {
         //get the town from the domain name
         print("no registrant city found, lets look in the domain name for a city name\n");
         $city = preg_replace('/\..*|transition|town|transicao/i', '', $domain);
-        if ($city) $townname = $city;
+        if ($city) $town_name = $city;
         else {
           print("no registrant city found in the domain name either, try to get the city name from the IP\n");
           //TODO: try to get the town from the IP address
@@ -126,7 +126,7 @@ if ($domain_entered) {
       <textarea class="IIRS_0_textarea" name="summary"><?php print($summaryFromDomain); ?></textarea>
 
       <?php if (IIRS_0_setting('imageEntry')) { ?>
-        <script src="https://www.google.com/jsapi?key=<?php print($GoogleAPIKey); ?>" type="text/javascript"></script>
+        <script src="https://www.google.com/jsapi?key=<?php print($google_API_key); ?>" type="text/javascript"></script>
 
         <script language="Javascript" type="text/javascript">
           function OnLoad() {
@@ -141,14 +141,14 @@ if ($domain_entered) {
             //drawOptions.setDrawMode(google.search.SearchControl.DRAW_MODE_TABBED);
             drawOptions.setSearchFormRoot(document.getElementById("IIRS_0_searchForm"));
             searchControl.draw(document.getElementById("IIRS_0_searchcontrol"), drawOptions);
-            searchControl.execute("<?php print($townname); ?> town");
+            searchControl.execute("<?php print($town_name); ?> town");
           }
 
           if (window.google) google.load('search', '1', {'callback':'OnLoad()'});
         </script>
 
         <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_translation('image'); ?>:</h3>
-        <div id="IIRS_0_searchcontrol"><?php print(IIRS_0_translation('Loading Google images for') . " $townname"); ?></div>
+        <div id="IIRS_0_searchcontrol"><?php print(IIRS_0_translation('Loading Google images for') . " $town_name"); ?></div>
         <div id="IIRS_0_searchForm"></div>
         <?php IIRS_0_print_translation('or upload'); ?>:
       <?php } ?>
@@ -159,7 +159,7 @@ if ($domain_entered) {
       </div>
     </form>
 
-    <?php if ($addProjects) { ?>
+    <?php if ($add_projects) { ?>
     <form method="POST" id="IIRS_0_form_popup_2" action="advanced.php" class="IIRS_0_horizontal_section IIRS_0_formPopupNavigate"><div>
       <?php IIRS_0_print_translation('project or idea thing'); ?>:
       <table id="IIRS_0_details">

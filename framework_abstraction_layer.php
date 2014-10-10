@@ -1,8 +1,8 @@
 <?php
 //--------------------------------------------------- optional functions
 if (!function_exists('IIRS_0_translation')) {
-  function IIRS_0_translation($sString) {
-    return $sString;
+  function IIRS_0_translation($string_to_translate) {
+    return $string_to_translate;
   }
 }
 
@@ -15,9 +15,9 @@ if (!function_exists('IIRS_0_input')) {
 if (!function_exists('IIRS_0_setting')) {
   function IIRS_0_setting($setting) {
     switch ($setting) {
-      case 'offerBuyDomains': return false;
-      case 'addProjects': return false;
-      case 'advancedSettings': return false;
+      case 'offer_buy_domains': return false;
+      case 'add_projects': return false;
+      case 'advanced_settings': return false;
       case 'imageEntry': return false;
       case 'langCode': return 'en';
       case 'serverCountry': return NULL;
@@ -26,24 +26,24 @@ if (!function_exists('IIRS_0_setting')) {
   }
 }
 
-if (!function_exists('IIRS_0_TI_isRegistered')) {
-  function IIRS_0_TI_isRegistered($townname, $centre_lat, $centre_lng, $place_description) {
-    //$townname = the townname typed in that generated this search
-    //$geokml, $place_description = potential matches to test for against the database
-    $bRegistered = false;
-    $aTIsNearby  = IIRS_0_TIs_nearby($centre_lat, $centre_lng, $place_description);
+if (!function_exists('IIRS_0_TI_is_registered')) {
+  function IIRS_0_TI_is_registered($town_name, $location_latitude, $location_longitude, $location_description) {
+    //$town_name = the townname typed in that generated this search
+    //$geokml, $location_description = potential matches to test for against the database
+    $registered  = false;
+    $TIs_nearby   = IIRS_0_TIs_nearby($location_latitude, $location_longitude, $location_description);
 
-    $townnameBase = removeTransitionWords($townname);
+    $town_nameBase = IIRS_0_remove_transition_words($town_name);
 
     //look at the data and decide...
     /*
-    foreach ($aTIsNearby as $townname => $aDetails) {
+    foreach ($TIs_nearby as $town_name => $aDetails) {
       //direct parameter comparison
       if (isset($aDetails['name'])) {
-        if (strcasecmp($aDetails['name'], $townnameBase)) $bRegistered = true;
+        if (strcasecmp($aDetails['name'], $town_nameBase)) $registered = true;
       }
-      if (isset($aDetails['place_description'])) {
-        if (strcasecmp($aDetails['place_description'], $place_description)) $bRegistered = true;
+      if (isset($aDetails['location_description'])) {
+        if (strcasecmp($aDetails['location_description'], $location_description)) $registered = true;
       }
 
       //try to asses how close / similar the areas are
@@ -54,7 +54,7 @@ if (!function_exists('IIRS_0_TI_isRegistered')) {
     }
     */
 
-    return $bRegistered;
+    return $registered;
   }
 }
 
@@ -76,9 +76,9 @@ if (!function_exists('IIRS_0_set_message')) {
   }
 }
 
-if (!function_exists('IIRS_0_detailsTI_page')) {
-  function IIRS_0_detailsTI_page() {
-    IIRS_0_set_message('IIRS_0_detailsTI_page() nto supported');
+if (!function_exists('IIRS_0_details_TI_page')) {
+  function IIRS_0_details_TI_page() {
+    IIRS_0_set_message('IIRS_0_details_TI_page() not supported');
     return NULL;
   }
 }
@@ -88,13 +88,13 @@ if (!function_exists('IIRS_0_TIs_all')) {
     //TODO: use the IIRS_0_TIs_nearby() with unlimited results
     //setting sensible limit of 5000 for performance purposes
     //TODO: admin warning when limit is at 4000
-    $aTIs = IIRS_0_TIs_nearby(0, 0, '', 5000);
-    return $aTIs;
+    $TIs = IIRS_0_TIs_nearby(0, 0, '', 5000);
+    return $TIs;
   }
 }
 
-if (!function_exists('IIRS_0_availableLanguages')) {
-  function IIRS_0_availableLanguages() {
+if (!function_exists('IIRS_0_available_languages')) {
+  function IIRS_0_available_languages() {
     return array('en');
   }
 }
@@ -103,20 +103,20 @@ if (!function_exists('IIRS_0_availableLanguages')) {
 //--------------------------------------------------- required functions
 if (true) {
   //querying
-  if (!function_exists('IIRS_0_TIs_nearby'))      {print('IIRS_0_TIs_nearby() required'); exit;}
-  if (!function_exists('IIRS_0_TIs_viewport'))    {print('IIRS_0_TIs_viewport() required'); exit;}
-  if (!function_exists('IIRS_0_detailsUser'))     {print('IIRS_0_detailsUser() required'); exit;}
-  if (!function_exists('IIRS_0_detailsTI_user'))  {print('IIRS_0_detailsTI_user() required'); exit;}
+  if (!function_exists('IIRS_0_TIs_nearby'))       {print('IIRS_0_TIs_nearby() required'); exit;}
+  if (!function_exists('IIRS_0_TIs_viewport'))     {print('IIRS_0_TIs_viewport() required'); exit;}
+  if (!function_exists('IIRS_0_details_user'))     {print('IIRS_0_details_user() required'); exit;}
+  if (!function_exists('IIRS_0_details_TI_user'))  {print('IIRS_0_details_TI_user() required'); exit;}
 
   //registering
-  if (!function_exists('IIRS_0_TI_addUser'))      {print('IIRS_0_TI_addUser() required'); exit;}
-  if (!function_exists('IIRS_0_TI_addTI'))        {print('IIRS_0_TI_addTI() required'); exit;}
-  if (!function_exists('IIRS_0_TI_updateTI'))     {print('IIRS_0_TI_updateTI() required'); exit;}
-  if (!function_exists('IIRS_0_TI_updateUser'))   {print('IIRS_0_TI_updateUser() required'); exit;}
-  if (!function_exists('IIRS_0_next_initnumber')) {print('IIRS_0_next_initnumber() required'); exit;}
+  if (!function_exists('IIRS_0_TI_add_user'))      {print('IIRS_0_TI_add_user() required'); exit;}
+  if (!function_exists('IIRS_0_TI_add_TI'))        {print('IIRS_0_TI_add_TI() required'); exit;}
+  if (!function_exists('IIRS_0_TI_update_TI'))     {print('IIRS_0_TI_update_TI() required'); exit;}
+  if (!function_exists('IIRS_0_TI_update_user'))   {print('IIRS_0_TI_update_user() required'); exit;}
+  if (!function_exists('IIRS_0_next_initnumber'))  {print('IIRS_0_next_initnumber() required'); exit;}
 
   //authentication
-  if (!function_exists('IIRS_0_logged_in'))       {print('IIRS_0_logged_in() required'); exit;}
-  if (!function_exists('IIRS_0_login'))           {print('IIRS_0_login() required'); exit;}
+  if (!function_exists('IIRS_0_logged_in'))        {print('IIRS_0_logged_in() required'); exit;}
+  if (!function_exists('IIRS_0_login'))            {print('IIRS_0_login() required'); exit;}
 }
 ?>

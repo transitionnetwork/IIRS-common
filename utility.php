@@ -10,7 +10,9 @@ function IIRS_0_printEncodedPostParameters() {
   print("\n\n");
 }
 function IIRS_0_escape_for_form_value($sString) {
-  return str_replace("'", '&#39;', str_replace('"', '&quot;', $sString));
+  //Wordpress may encode some $_POST variables as WP_User Objects sometimes
+  //the escaped output will come here
+  return is_string($sString) ? str_replace("'", '&#39;', str_replace('"', '&quot;', $sString)) : "";
 }
 function IIRS_0_debug_print_inputs() {
   var_dump($_POST);
@@ -51,18 +53,20 @@ function IIRS_0_register_translation($sString) {
   $sTranslatedString = IIRS_0_translation($sString);
   print("<div style=\"display:none;\" id=\"$sTranslationID\">$sTranslatedString</div>");
 }
+
 function IIRS_0_set_message_translated($sString, $IIRS_widget_mode = true) {
   return IIRS_0_set_message(IIRS_0_translation($sString, $IIRS_widget_mode));
 }
 
 //--------------------------------------------- misc
-function removeTransitionWords($sTownName) {
+function IIRS_0_remove_transition_words($sTownName) {
   $sTownNameStub = str_ireplace('InTransition', '', $sTownName);
   $sTownNameStub = str_ireplace('Transition',   '', $sTownNameStub);
   $sTownNameStub = str_ireplace('Towns',        '', $sTownNameStub);
   return $sTownNameStub;
 }
-function getDOMValue($startNode, $xpathString) {
+
+function IIRS_0_get_DOM_value($startNode, $xpathString) {
   $ret = '';
   $oXPath    = new DOMXpath($startNode->ownerDocument);
   $nodelist = $oXPath->query($xpathString, $startNode);
@@ -71,16 +75,17 @@ function getDOMValue($startNode, $xpathString) {
   }
   return $ret;
 }
+
 function sort_date_desc($a, $b) {return $a['date'] < $b['date'];}
 
 //--------------------------------------------- language detection functions
-function printLanguageSelector() {
-  global $langList, $langCode, $availableLanguages;
+function IIRS_0_print_language_selector() {
+  global $lang_list, $lang_code, $available_languages;
   $html = '<select id="IIRS_0_language_control">';
-  foreach ($availableLanguages as $code) {
-    if (isset($langList[$code])) {
-      $details = $langList[$code];
-      $selected = ($code == $langCode ? 'selected' : '');
+  foreach ($available_languages as $code) {
+    if (isset($lang_list[$code])) {
+      $details = $lang_list[$code];
+      $selected = ($code == $lang_code ? 'selected' : '');
       $html .= <<<HTML
         <option $selected value="$code">$details[1]</option>
 HTML;
@@ -90,7 +95,7 @@ HTML;
   print($html);
 }
 
-function lookupCountryCodeOfIPAddress($domain) {
+function IIRS_0_lookup_country_code_of_IPaddress($domain) {
   //now get the public ip address of this domain (either this server, or the referer)
   $hostIP             = gethostbyname($domain); //gethostbyname() PHP 4.0
   //host web-server IP caller location

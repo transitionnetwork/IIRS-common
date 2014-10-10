@@ -19,7 +19,7 @@ print($debug_environment);
 
   <!-- intial form -->
   <div class="IIRS_0_h1"><?php IIRS_0_print_translation('register your transition town'); ?>
-    <?php printLanguageSelector(); ?>
+    <?php IIRS_0_print_language_selector(); ?>
   </div>
   <!-- using an absolute @action here because this HTML is also presented out-of-IIRS-context, e.g. a wordpress shortcode -->
   <form method="POST" id="IIRS_0_form_sidebar" class="IIRS_0_formPopupNavigate IIRS_0_form" action="/IIRS/registration/location_general"><div>

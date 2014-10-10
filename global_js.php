@@ -7,14 +7,14 @@ require_once('environment.php');
 */
 
 <?php
-IIRS_0_print_javascript_variable('g_sLangCode',          $langCode); //for sending through to subsequent AJAX loads
+IIRS_0_print_javascript_variable('g_sLangCode',          $lang_code); //for sending through to subsequent AJAX loads
 
 
-IIRS_0_print_javascript_variable('g_sDomainStem',        $IIRSDomainStem);
-IIRS_0_print_javascript_variable('g_sIIRSURLStem',       $IIRSURLStem);
-IIRS_0_print_javascript_variable('g_sIIRSURLCommonStem', $IIRSURLCommonStem);
-IIRS_0_print_javascript_variable('g_sIIRSURLProcessStem',$IIRSURLProcessStem);
-IIRS_0_print_javascript_variable('g_sIIRSURLImageStem',  $IIRSURLImageStem);
+IIRS_0_print_javascript_variable('g_sDomainStem',        $IIRS_domain_stem);
+IIRS_0_print_javascript_variable('g_sIIRSURLStem',       $IIRS_URL_stem);
+IIRS_0_print_javascript_variable('g_sIIRSURLCommonStem', $IIRS_URL_common_stem);
+IIRS_0_print_javascript_variable('g_sIIRSURLProcessStem',$IIRS_URL_process_stem);
+IIRS_0_print_javascript_variable('g_sIIRSURLImageStem',  $IIRS_URL_image_stem);
 
-IIRS_0_print_javascript_variable('g_sThrobber', '<img id="IIRS_0_throbber" src="' . "$IIRSURLImageStem/throbber-active" . '" />');
+IIRS_0_print_javascript_variable('g_sThrobber', '<img id="IIRS_0_throbber" src="' . "$IIRS_URL_image_stem/throbber-active" . '" />');
 ?>

@@ -24,10 +24,10 @@ require_once("$IIRS_common_dir/general_interaction.js");
 require_once("$IIRS_common_dir/popup_interaction.js");
 
 //flow area specific general interaction, e.g. form checking
-$customJavaScriptInteractionsPath = "$IIRS_common_dir/$processGroup/general_interaction.js";
+$customJavaScriptInteractionsPath = "$IIRS_common_dir/$process_group/general_interaction.js";
 if (file_exists($customJavaScriptInteractionsPath)) require_once($customJavaScriptInteractionsPath);
 //flow area popup specific general interaction, e.g. extra form navigation and checking
-$customJavaScriptInteractionsPath = "$IIRS_common_dir/$processGroup/popup_interaction.js";
+$customJavaScriptInteractionsPath = "$IIRS_common_dir/$process_group/popup_interaction.js";
 if (file_exists($customJavaScriptInteractionsPath)) require_once($customJavaScriptInteractionsPath);
 ?>
 

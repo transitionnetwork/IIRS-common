@@ -51,10 +51,10 @@ require_once('environment.php');
 
 <div id="IIRS_0_popup" class="IIRS_0_popup">
   <div class="IIRS_0_systemmenu">
-    <img id="IIRS_0_popup_close" src="<?php print("$IIRSURLImageStem/close"); ?>" />
-    <!-- img id="IIRS_0_popup_refresh" src="<?php print("$IIRSURLImageStem/refresh"); ?>" / -->
+    <img id="IIRS_0_popup_close" src="<?php print("$IIRS_URL_image_stem/close"); ?>" />
+    <!-- img id="IIRS_0_popup_refresh" src="<?php print("$IIRS_URL_image_stem/refresh"); ?>" / -->
   </div>
   <div class="IIRS_0_content">
-    <img id="IIRS_0_throbber" src="<?php print("$IIRSURLImageStem/throbber-active"); ?>" /> page loading...
+    <img id="IIRS_0_throbber" src="<?php print("$IIRS_URL_image_stem/throbber-active"); ?>" /> page loading...
   </div>
 </div>

@@ -9,8 +9,8 @@ require_once('inputs.php');
 //------------------------------------- register the TI!
 //NOTE: the $pass might not have been sent through which means a random one will be generated
 $TISaveError = '';
-if ($userID = IIRS_0_TI_addUser($name, $email, $pass, $phone)) {
-  if ($tiID = IIRS_0_TI_addTI($userID, $initiative_name, $townname, $place_centre_lat, $place_centre_lng, $place_description, $place_country, $domain)) {
+if ($userID = IIRS_0_TI_add_user($name, $email, $pass, $phone)) {
+  if ($tiID = IIRS_0_TI_add_TI($userID, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain)) {
     //all ok
   } else {
     $TISaveError = IIRS_0_translation('could not save the initiative') . ": [$initiative_name] " . IIRS_0_translation(' is already in use');
@@ -27,7 +27,7 @@ if ($tiID) {
 
   //------------------------------------- get some nice domain names for this town
   $domains_found     = false;
-  $domain_part       = ($is_example ? 'bedford' : $townname);
+  $domain_part       = ($is_example ? 'bedford' : $town_name);
   $nice_domains_html = '';
 
   $nice_domains = array();
@@ -107,8 +107,8 @@ HTML;
       <ul id="IIRS_0_list_selector">
         <?php if (!$domains_found) { ?>
           <!--li class="IIRS_0_domain IIRS_0_message">
-            <img src="< ?php print("$IIRSURLImageStem/information"); ?>" />
-            < ?php print(IIRS_0_translation('no registered websites found for this town') . " $townname " . '<br/>' . IIRS_0_translation('you will need to') . ' <a href="mailto:annesley_newholm@yahoo.it">' . IIRS_0_translation('register by email') . '</a> ' . IIRS_0_translation('please type your website name in below if you have one')); ?>
+            <img src="< ?php print("$IIRS_URL_image_stem/information"); ?>" />
+            < ?php print(IIRS_0_translation('no registered websites found for this town') . " $town_name " . '<br/>' . IIRS_0_translation('you will need to') . ' <a href="mailto:annesley_newholm@yahoo.it">' . IIRS_0_translation('register by email') . '</a> ' . IIRS_0_translation('please type your website name in below if you have one')); ?>
           </li -->
         <?php } ?>
         <?php print($nice_domains_html); ?>

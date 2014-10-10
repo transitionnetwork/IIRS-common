@@ -13,6 +13,18 @@ re-visit all code for XSS and injection (+ generic form inputs writing)
 prefix all variable names with IIRS_0_
 email address validation in JS widget still submits the form
 
+-------------- finalising
+test WPML integration. do some translations
+Akismet spam protection
+error reporting
+coding standards
+fix local sendmail email system to test emailing!
+provide standard WordPress display template
+look for any WordPress specific stuff in IIRS_common
+test
+recommend during installation twig and post_formats
+integrate with a mapping plugin
+
 -------------- other widgets: 3-6 days
 other widgets (see spec at https://www.transitionnetwork.org/blogs/ed-mitchell/2013-08/international-initiative-registration-service-workflows):
   view detail (integrate from a WP view also, not just the /IIRS/detail/index URL)

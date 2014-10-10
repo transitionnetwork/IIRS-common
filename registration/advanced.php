@@ -7,7 +7,7 @@ require_once('environment.php');
 require_once('inputs.php');
 
 //------------------------------------- values
-IIRS_0_TI_updateTI(array('summary' => $summary));
+IIRS_0_TI_update_TI(array('summary' => $summary));
 
 //------------------------------------- about us section
 ?>
