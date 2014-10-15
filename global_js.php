@@ -15,6 +15,7 @@ IIRS_0_print_javascript_variable('g_sIIRSURLStem',       $IIRS_URL_stem);
 IIRS_0_print_javascript_variable('g_sIIRSURLCommonStem', $IIRS_URL_common_stem);
 IIRS_0_print_javascript_variable('g_sIIRSURLProcessStem',$IIRS_URL_process_stem);
 IIRS_0_print_javascript_variable('g_sIIRSURLImageStem',  $IIRS_URL_image_stem);
+IIRS_0_print_javascript_variable('g_sGoogleAPIKey',      $google_API_key);
 
 IIRS_0_print_javascript_variable('g_sThrobber', '<img id="IIRS_0_throbber" src="' . "$IIRS_URL_image_stem/throbber-active" . '" />');
 ?>

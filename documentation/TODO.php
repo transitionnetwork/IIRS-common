@@ -1,3 +1,4 @@
+<pre>
 --------------------------------------- IIRS first phase production TODO:
 send password in email* (wordpress?) : initial one time login? wordpress settings?
 
@@ -9,30 +10,36 @@ is location data county sensitive?* -> no it is defaulting to USA (of course)
   need to send through the country: we have it now....?
   users language is not necessarily their desired registration location
   their REMOTE_ADDR may well be though...
-re-visit all code for XSS and injection (+ generic form inputs writing)
-prefix all variable names with IIRS_0_
-email address validation in JS widget still submits the form
+  Oakley returns ONLY the American one, Oakley, UK does return the UK one
+    add a note about user entry specificity?
 
 -------------- finalising
-test WPML integration. do some translations
 Akismet spam protection
-error reporting
-coding standards
+  what to do if it is marked as spam?
+  use Annesley robot spotting
+error reporting (only user based error reports for now)
+  User updating: duplicate emails and user names are not being checked
+  TI updating: duplicate places and names are not being checked
+re-check coding standards: move everything to Wordpress standard for now (see apply_coding_standards.php)
+  sandbox all Javascript function names
 fix local sendmail email system to test emailing!
-provide standard WordPress display template
-look for any WordPress specific stuff in IIRS_common
-test
-recommend during installation twig and post_formats
-integrate with a mapping plugin
+  what format do we want the email?
+  configurable? -> use the translation system
+testing, testing, testing...
+ensure that a "place" has been selected.
+final redirect -> list / mapping?
+HTML editor necessary OR just replace with <p>s
+  summary entry -> paragraphs? pre? word limit suggestion?
+Luis: to write own template
+  put this in the documentation
+  with the example template
+Auto-load the appropriate text-domain from Wordpress/IIRS/languages (it_IT)
+
+-------------- questions:
+http://annesley.parrot.transitionnetwork.org/
 
 -------------- other widgets: 3-6 days
 other widgets (see spec at https://www.transitionnetwork.org/blogs/ed-mitchell/2013-08/international-initiative-registration-service-workflows):
-  view detail (integrate from a WP view also, not just the /IIRS/detail/index URL)
-    need to pass some sort of ID here...
-    or could we use IIRS_0_fullDetailURL($ID)?
-  basic editing: javascript HTML dump in*
-    IIRS_0_editURL($ID)?
-    submitting the form adds a slash on to the end!
   mapping
     infowindows on map on their own marker!
     make maps init generic
@@ -40,8 +47,6 @@ other widgets (see spec at https://www.transitionnetwork.org/blogs/ed-mitchell/2
     integrate / require
       wp-geo https://wordpress.org/plugins/wp-geo/
       geo-mashup https://wordpress.org/plugins/geo-mashup/
-  list
-    IIRS/list needs an edit marker
 
 -------------- deployment / testing: 1 day
 deployment on to live
@@ -49,6 +54,17 @@ commenting / code documentation / re-visit
 cross browser testing
 
 --------------------------------------- IIRS SECOND phase production TODO:
+the_title for IIRS full TI view (not used before)
+integrate with a mapping plugin
+recommend during installation twig and post_formats
+email address validation in JS widget still submits the form
+provide standard WordPress display template
+wordpress settings link up (lot of work surprisingly -> feedback first, some of framework is there)
+auto / or in settings.page setup a generic menu
+version control and updating information (upload the plugin to the Wordpress repository)
+WISYWYG summary editor (paragraphs, pictures, etc.)
+  this can be done manually using the backend Wordpress editor for the initial registrations
+
 Plugins and widgets:
   register themselves with TN.org
     domain, type (widget/plugin), host system (WP / Drupal / x), last accessed, last amalgamated, altered, new fields
@@ -142,3 +158,4 @@ XML basic universal form elements definition
   the plugin and the TN.org use this XML => HTML form code to produce the same HTML
   client can write Javascript or PHP hook functions to alter the form
 
+</pre>

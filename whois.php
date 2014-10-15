@@ -9,8 +9,8 @@ function whois($domain) {
   if ($whois_text) {
     $aEntries      = explode("\n", $whois_text);
     $aAssocEntries = array();
-    foreach ($aEntries as $sEntry) {
-      $aEntry = explode(":", $sEntry);
+    foreach ($aEntries as $entry) {
+      $aEntry = explode(":", $entry);
       if (count($aEntry) == 2) $aAssocEntries[$aEntry[0]] = $aEntry[1];
     }
   }

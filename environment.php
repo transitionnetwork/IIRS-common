@@ -1,4 +1,5 @@
 <?php
+require_once('keys.php');
 require_once('framework_abstraction_layer.php');
 //hold the debug in a string because some functions output headers later
 global $debug_environment;
@@ -7,12 +8,12 @@ $debug_environment = '';
 //---------------------------------------------------------- misc settings
 //?IIRS_widget_mode=true is sent through by the JavaScript widget on all requests
 define('IIRS_0_CLEAR_PASSWORD', '****');
-$IIRS_widget_mode   = (IIRS_0_input('IIRS_widget_mode') == 'true');
-$IIRS_plugin_mode   = !$IIRS_widget_mode;
+$IIRS_widget_mode     = (IIRS_0_input('IIRS_widget_mode') == 'true');
+$IIRS_plugin_mode     = !$IIRS_widget_mode;
 if ($IIRS_widget_mode) header('Access-Control-Allow-Origin: *'); //allow cross domain AJAX access to this page
-$google_API_key       = 'AIzaSyCZjrltZvehXP1dnAZCw41NN8VbZCKFf44';
-$default_lat         = 52.1359783;
-$default_lng         = -0.4666513;
+$transition_namespace = 'http://transitionnetwork.org/namespaces/2014/transition';
+$default_lat          = 52.1359783;
+$default_lng          = -0.4666513;
 
 //---------------------------------------------------------- directories
 //this system accepts a strict URL structure for IIRS calls:
@@ -43,26 +44,46 @@ if (count($dirs) == 2) {
 $filename           = array_pop($dirs);                       // index or location_summary
 $host_directory     = implode('/', $dirs);                    // IIRS/registration
 $last_directory     = array_pop($dirs);                       // registration
-$prefix_directory   = implode('/', $dirs);                    // IIRS
-$process_group      = $last_directory;                         // registration
-$debug_environment .= "-------------- URL parse\n";
-$debug_environment .= "currentPath: $current_path\n";
-$debug_environment .= "hostDirectory: $host_directory\n";
-$debug_environment .= "lastDirectory: $last_directory\n";
-$debug_environment .= "filename: $filename\n";
-$debug_environment .= "\n";
+$prefix_directory   = implode('/', $dirs);                    // IIRS or initiative_profile...! or sumink else
+$plugin_directory   = 'IIRS';                                 // always IIRS so images can be found in other situs
+$process_group      = $last_directory;                        // registration
 
 //---------------------------------------------------------- URLs
 //useful URL bases for the various HREFs to IIRS content from the widget scenario
 //so that we can make more requests from the same domain
-$host_domain           = $_SERVER['HTTP_HOST'];                  //blah.com $_SERVER PHP >= 4.1.0
+global $IIRS_host_domain, $IIRS_user_ip, $IIRS_user_agent, $IIRS_HTTP_referer;
+global $IIRS_is_home_domain, $IIRS_is_dev_domain;
+global $IIRS_domain_stem, $IIRS_URL_stem, $IIRS_URL_common_stem, $IIRS_URL_process_stem, $IIRS_URL_image_stem;
+$IIRS_host_domain      = $_SERVER['HTTP_HOST'];                     //blah.com $_SERVER PHP >= 4.1.0
+$IIRS_user_ip          = $_SERVER['REMOTE_ADDR'];                   //92.160.10.12
+$IIRS_user_agent       = $_SERVER['HTTP_USER_AGENT'];               //Mozilla etc.
+$IIRS_HTTP_referer     = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
 $request_protocol      = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http');
-$is_home_domain        = ($host_domain == 'transitionnetwork.org'); //debug settings only
-$IIRS_domain_stem      = "$request_protocol://$host_domain";       // http://blah.com
-$IIRS_URL_stem         = "$IIRS_domain_stem/$prefix_directory";     // http://blah.com/IIRS
-$IIRS_URL_common_stem  = "$IIRS_URL_stem/IIRS_common";             // http://blah.com/IIRS/IIRS_common
+$IIRS_is_home_domain   = ($IIRS_host_domain == 'transitionnetwork.org'); //live setup
+$IIRS_is_dev_domain    = ($IIRS_host_domain == 'tnv3.dev');              //debug settings only
+$IIRS_domain_stem      = "$request_protocol://$IIRS_host_domain";        // http://blah.com
+$IIRS_URL_stem         = "$IIRS_domain_stem/$plugin_directory";     // http://blah.com/IIRS
+$IIRS_URL_common_stem  = "$IIRS_URL_stem/IIRS_common";              // http://blah.com/IIRS/IIRS_common
 $IIRS_URL_process_stem = "$IIRS_URL_stem/$process_group";           // http://blah.com/IIRS/registration
-$IIRS_URL_image_stem   = "$IIRS_URL_stem/images";                  // http://blah.com/IIRS/images
+$IIRS_URL_image_stem   = "$IIRS_URL_stem/images";                   // http://blah.com/IIRS/images
+
+//----------------------------------------------------------- debug
+$debug_environment .= "-------------- URL parse\n";
+$debug_environment .= "current_path: $current_path\n";
+$debug_environment .= "host_directory: $host_directory\n";
+$debug_environment .= "last_directory: $last_directory\n";
+$debug_environment .= "prefix_directory: $prefix_directory\n";
+$debug_environment .= "plugin_directory: $plugin_directory\n";
+$debug_environment .= "process_group: $process_group\n";
+$debug_environment .= "IIRS_host_domain: $IIRS_host_domain\n";
+$debug_environment .= "request_protocol: $request_protocol\n";
+$debug_environment .= "IIRS_is_home_domain: $IIRS_is_home_domain\n";
+$debug_environment .= "IIRS_is_dev_domain: $IIRS_is_dev_domain\n";
+$debug_environment .= "IIRS_URL_common_stem: $IIRS_URL_common_stem\n";
+$debug_environment .= "IIRS_URL_process_stem: $IIRS_URL_process_stem\n";
+$debug_environment .= "IIRS_URL_image_stem: $IIRS_URL_image_stem\n";
+$debug_environment .= "filename: $filename\n";
+$debug_environment .= "\n";
 
 //----------------------------------------------------------- home server location
 //for:
@@ -86,16 +107,15 @@ $server_country  = NULL;
 
 //------- 1) explicit host web-server location setting (plugin mode only)
 if (empty($server_country) && $IIRS_plugin_mode) {
-  $server_country = IIRS_0_setting('serverCountry');
+  $server_country = IIRS_0_setting('server_country');
   if (!empty($server_country)) $debug_environment .= "1) explicit host web-server location setting (plugin mode only): [$server_country]\n";
 }
 
 //------- 2) host domain whois record
 if (empty($server_country)) {
-  $country_domain      = $host_domain;
+  $country_domain      = $IIRS_host_domain;
   if ($IIRS_widget_mode) {
-    $HTTP_referer      = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
-    $country_domain    = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $HTTP_referer);
+    $country_domain    = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $IIRS_HTTP_referer);
   }
   /*
   if ($whoIs_entries || ($whoIs_entries = whois($country_domain))) {
@@ -111,7 +131,7 @@ if (empty($server_country)) {
 if (empty($server_country)) {
   $server_country = IIRS_0_lookup_country_code_of_IPaddress($country_domain);
   $debug_environment .= "IIRS_widget_mode: $IIRS_widget_mode, countryDomain: $country_domain\n";
-  $debug_environment .= "serverCountry: $server_country\n";
+  $debug_environment .= "server_country: $server_country\n";
   if (!empty($server_country)) $debug_environment .= "3) host web-server location usual language: [$server_country]\n";
 }
 
@@ -121,7 +141,7 @@ if (empty($server_country)) {
 //----------------------------------------------------------- language selection
 //choose which language we want to present:
 //  1) widget forced language code
-//     e.g. widget loader: http://transitionnetwork.org/IIRS/registration/widgetloader?langCode=hu
+//     e.g. widget loader: http://transitionnetwork.org/IIRS/registration/widgetloader?lang_code=hu
 //  2) users laptop preference(s)
 //     from HTTP_ACCEPT_LANGUAGE
 //  3) explicit host web-server language setting
@@ -162,7 +182,7 @@ $debug_environment  .= "langList count: [" . count($lang_list) . "]\n";
 
 //------- 1) widget forced lang-code
 if (empty($lang_code)) {
-  $lang_code = IIRS_0_input('langCode'); //?langCode=es
+  $lang_code = IIRS_0_input('lang_code'); //?lang_code=es
   if (!empty($lang_code)) {
     if (!in_array($lang_code, $available_languages)) {
       $lang_code_warning = "the language you requested [$lang_code] is not available (1)";
@@ -183,7 +203,7 @@ if (empty($lang_code)) {
 //------- 3) explicit host web-server language setting (plugin mode only)
 if (empty($lang_code)) {
   if ($IIRS_plugin_mode) {
-    $lang_code = IIRS_0_setting('langCode');
+    $lang_code = IIRS_0_setting('lang_code');
     if (!in_array($lang_code, $available_languages)) {
       $lang_code_warning = "the language you requested [$lang_code] is not available (3)";
       $lang_code        = '';
@@ -194,10 +214,10 @@ if (empty($lang_code)) {
 
 //------- 4) host domain whois record
 if (empty($lang_code)) {
-  $language_domain     = $host_domain;
+  $language_domain     = $IIRS_host_domain;
   if ($IIRS_widget_mode) {
-    $HTTP_referer      = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
-    $language_domain   = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $HTTP_referer);
+    $IIRS_HTTP_referer      = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
+    $language_domain   = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $IIRS_HTTP_referer);
   }
   if ($whoIs_entries || ($whoIs_entries = whois($language_domain))) {
     if     (in_array($whoIs_entries['Registrant Country'], $available_languages)) $lang_code = $whoIs_entries['Registrant Country'];
@@ -225,16 +245,10 @@ if ($lang_code_warning) $debug_environment .= "$lang_code_warning\n";
 
 //----------------------------------------------------------- development modes
 //setup development error reporting
-if (!$is_home_domain && false) {
+if ($IIRS_is_dev_domain) {
   $debug_environment .= "!is_home_domain: setting error_reporting(E_ALL & !E_STRICT)\n";
   error_reporting(E_ALL | ~E_STRICT | ~E_NOTICE);
   ini_set('display_errors', TRUE);
   ini_set('display_startup_errors', TRUE);
 } else $debug_environment .= "is_home_domain: live mode, error_reporting off\n";
-
-//------------------------------------------------------------ component configuration options
-$accept_website_address = IIRS_0_setting('accept_website_address');
-$offer_buy_domains      = IIRS_0_setting('offer_buy_domains');
-$add_projects           = IIRS_0_setting('add_projects');
-$advanced_settings      = IIRS_0_setting('advanced_settings');
 ?>

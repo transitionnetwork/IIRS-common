@@ -1,4 +1,6 @@
 <?php
+$location_is_example = ( isset( $town_name ) && substr( $town_name, 0, 7 ) == 'example' || $town_name == 't:town or area' || $town_name == '' );
+
 function IIRS_0_location_search_options( $town_name, &$location_uniques = array() ) {
   $location_arrays = IIRS_0_location_lookup( $town_name );
   $location_HTML   = IIRS_0_standard_location_output( $location_arrays, $location_uniques );
@@ -8,6 +10,8 @@ function IIRS_0_location_search_options( $town_name, &$location_uniques = array(
 function IIRS_0_location_lookup( $town_name ) {
   // town lookup and options
   // RETURNS an array of places
+  global $location_is_example;
+
   $mapping_provider = "Google";
   $format           = 'xml';
   $location_arrays     = array( );
@@ -25,7 +29,7 @@ function IIRS_0_location_lookup( $town_name ) {
     // var_dump( $osm->getPlace( $town_name ));
 
     // http://wiki.openstreetmap.org/wiki/Nominatim#Parameters
-    if ( $is_example ) $xml = file_get_contents( "$IIRS_common_dir/registration/$mapping_provider.$format" );
+    if ( $location_is_example ) $xml = file_get_contents( "$IIRS_common_dir/registration/$mapping_provider.$format" );
     else               $xml = IIRS_0_http_request( "http://nominatim.openstreetmap.org/search?q=$town_name&format=$format&polygon_kml=1&addressdetails=1" );
     $doc = new DOMDocument( );
     $doc->loadXML( $xml );
@@ -81,7 +85,7 @@ function IIRS_0_location_lookup( $town_name ) {
     $town_name_encoded = urlencode( $town_name );
     $url_request      = "http://maps.google.com/maps/api/geocode/$format?sensor=false&address=$town_name_encoded";
     print( $url_request );
-    if ( $is_example ) $xml = file_get_contents( "$IIRS_common_dir/registration/$mapping_provider.$format" );
+    if ( $location_is_example ) $xml = file_get_contents( "$IIRS_common_dir/registration/$mapping_provider.$format" );
     else               $xml = IIRS_0_http_request( $url_request, 5.0, TRUE );
 
     // DOMDocument and DOMXpath ( PHP5 )
@@ -112,8 +116,8 @@ function IIRS_0_location_lookup( $town_name ) {
             // entry and add in to the array
             // basic values
             $location_array['description']  = IIRS_0_get_DOM_value( $placeNode, 'formatted_address' );
-            $location_array['latitude']   = IIRS_0_get_DOM_value( $placeNode, 'geometry/location/lat' );
-            $location_array['longitude']   = IIRS_0_get_DOM_value( $placeNode, 'geometry/location/lng' );
+            $location_array['latitude']     = IIRS_0_get_DOM_value( $placeNode, 'geometry/location/lat' );
+            $location_array['longitude']    = IIRS_0_get_DOM_value( $placeNode, 'geometry/location/lng' );
             $location_array['granuality']   = IIRS_0_get_DOM_value( $placeNode, 'type' );
 
             // full address
@@ -162,7 +166,7 @@ function IIRS_0_standard_location_output( $location_arrays, &$location_uniques =
   return $location_output;
 }
 
-function IIRS_0_location_to_HTML( $location_array, &$location_uniques = array(), $select = false ) {
+function IIRS_0_location_to_HTML( $location_array, &$location_uniques = array(), $select = false, $town_name = '' ) {
   static $option = 1;
   $location_description  = $location_array['description'];
   $location_latitude     = $location_array['latitude'];
@@ -188,7 +192,7 @@ function IIRS_0_location_to_HTML( $location_array, &$location_uniques = array(),
       $location_status .= '<input class="IIRS_0_button" type="button" value="' . IIRS_0_translation( 'message' ) . '"/>';
       $disabled      = 'disabled="1"';
     } else {
-      $location_status  = IIRS_0_translation( "transition initiative not registered yet!" ) . " $google_map_link<br/>";
+      $location_status  = IIRS_0_translation( 'transition initiative not registered yet!' ) . " $google_map_link<br/>";
       // $location_status .= IIRS_0_translation( 'closest initiative' ) . ': 5' . IIRS_0_translation( 'km' );
       $disabled      = '';
     }

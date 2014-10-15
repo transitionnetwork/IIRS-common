@@ -1,6 +1,8 @@
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
+/* TODO: complete the search function
+ */
 global $debug_environment;
 require_once('framework_abstraction_layer.php');
 require_once('utility.php');

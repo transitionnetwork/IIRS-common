@@ -1,5 +1,5 @@
-This is prototype code, throw away, proof-of-concept
-It will be shared across multiple LAMP stack platforms
+<pre>
+This will be shared across multiple LAMP stack platforms
 including, but not limited to, WordPress and Drupal
 therefore is platform agnostic using as much common PHP 5.x code as possible
 it also includes a framework for serving a Javascript widget to present the screens
@@ -30,3 +30,4 @@ deployment for the page:
   JavaScript widget (the widget webserver is contained in the referer)
 the client browser language is correct in all cases
 so the code is all standalone PHP, framework independent
+</pre>

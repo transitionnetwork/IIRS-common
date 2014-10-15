@@ -1,11 +1,13 @@
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
+global $debug_environment;
 require_once( 'framework_abstraction_layer.php' );
 require_once( 'utility.php' );
 require_once( 'environment.php' );
 require_once( 'inputs.php' );
 require_once( 'location.php' );
+print($debug_environment);
 
 // -------------------------------------------------------------------- check input type: domain or town name
 $is_domain   = false;
@@ -116,9 +118,7 @@ if ( !$town_name ) {
       <!-- tr><td><?php IIRS_0_print_translation( 'phone number' ); ?><br/>( <?php IIRS_0_print_translation( 'optional' ); ?> )</td><td><input name="phone" /></td></tr -->
     </table>
     <div id="IIRS_0_details_teaser">
-      <?php IIRS_0_print_translation( 'registering your email means that local people will contact you to offer support and for your opinion on projects like
-      food growing, energy supply and other Transition ideals. we will let Transition Brixton ( your nearest advanced Town )
-      know you have registered so they can connect, support, encourage and share! : )' ); ?>
+      <?php IIRS_0_print_translation( 'registering your email means that local people will contact you to offer support and for your opinion on projects like food growing, energy supply and other Transition ideals. we will let Transition Brixton ( your nearest advanced Town ) know you have registered so they can connect, support, encourage and share! : )' ); ?>
     </div>
 
     <br class="IIRS_0_clear" />

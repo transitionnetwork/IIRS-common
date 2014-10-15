@@ -1,33 +1,39 @@
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
+global $debug_environment;
 require_once('framework_abstraction_layer.php');
 require_once('utility.php');
 require_once('environment.php');
 require_once('inputs.php');
+require_once('location.php');
+require_once('akismet.php');
+print($debug_environment);
 
 //------------------------------------- register the TI!
-//NOTE: the $pass might not have been sent through which means a random one will be generated
-$TISaveError = '';
-if ($userID = IIRS_0_TI_add_user($name, $email, $pass, $phone)) {
-  if ($tiID = IIRS_0_TI_add_TI($userID, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain)) {
+//if the $pass is not being captured a random one will be generated
+$TI_save_error = null;
+if ($user_ID = IIRS_0_TI_add_user($name, $email, $pass, $phone)) {
+  if ($ti_ID = IIRS_0_TI_verify_add_TI($user_ID, $IIRS_host_domain, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain)) {
     //all ok
   } else {
-    $TISaveError = IIRS_0_translation('could not save the initiative') . ": [$initiative_name] " . IIRS_0_translation(' is already in use');
+    IIRS_0_delete_user($user_ID);
+    $TI_save_error = IIRS_0_translation('could not save the initiative') . ": [$initiative_name] " . IIRS_0_translation(' is already in use');
   }
 } else {
-  $TISaveError = IIRS_0_translation('could not save the user');
+  $TI_save_error = IIRS_0_translation('could not save the user');
 }
-if ($TISaveError) print($TISaveError);
+// TODO: pretty error report
+if ( $TI_save_error ) print( $TI_save_error );
 
-if ($tiID) {
+if ( ! $TI_save_error ) {
   //------------------------------------- debug
-  print("userID:$userID (don't forget that all emails on dev point to annesley_newholm@yahoo.it)<br/>");
-  print("tiID:$tiID<br/>");
+  print("userID:$user_ID (don't forget that all emails on dev point to annesley_newholm@yahoo.it)<br/>");
+  print("tiID:$ti_ID<br/>");
 
   //------------------------------------- get some nice domain names for this town
   $domains_found     = false;
-  $domain_part       = ($is_example ? 'bedford' : $town_name);
+  $domain_part       = ($location_is_example ? 'bedford' : $town_name);
   $nice_domains_html = '';
 
   $nice_domains = array();
@@ -42,19 +48,19 @@ if ($tiID) {
   /*
   $effective_tld_names = file_get_contents(__DIR__ . '/effective_tld_names.dat.txt');
   $aAllFileEntries     = explode("\n", $effective_tld_names);
-  $aTLDs               = array();
-  foreach ($aAllFileEntries as $sEntry) {
-    if (strlen($sEntry) && substr($sEntry, 0, 2) != '//') {
-      $aTLDs[] = $sEntry;
+  $all_TLDs               = array();
+  foreach ($aAllFileEntries as $entry) {
+    if (strlen($entry) && substr($entry, 0, 2) != '//') {
+      $all_TLDs[] = $entry;
     }
   }
-  print("check potential domain string [$domain_part] combinations against [" . count($aTLDs) . "] TLDs:\n");
+  print("check potential domain string [$domain_part] combinations against [" . count($all_TLDs) . "] TLDs:\n");
   */
-  $aTLDs = array('org', 'org.uk', 'com', 'net');
+  $all_TLDs = array('org', 'org.uk', 'com', 'net');
 
   $option = 1;
   foreach ($nice_domains as $nice_domain) {
-    foreach ($aTLDs as $tld) {
+    foreach ($all_TLDs as $tld) {
       $full_domain = strtolower("$nice_domain.$tld");
       //checkdnsrr($full_domain) PHP >= 4.0
       //could also use gethostbyname($full_domain)
@@ -84,24 +90,24 @@ HTML;
 </style>
 
 <div id="IIRS_0">
-  <?php if (!$tiID) { ?>
+  <?php if ( $TI_save_error ) { ?>
     <div class="IIRS_0_errors">
-      <div id="IIRS_0_popup_title" class="IIRS_0_h1"><?php print($TISaveError); ?></div>
+      <div id="IIRS_0_popup_title" class="IIRS_0_h1"><?php print( $TI_save_error ); ?></div>
       <div class="IIRS_0_horizontal_section">
         <input class="IIRS_0_bigbutton IIRS_0_back IIRS_0_error_back" type="button" value="&lt;&lt; <?php IIRS_0_print_translation('back'); ?>" />
       </div>
     </div>
   <?php } else {
       $message = IIRS_0_translation('you are now registered') . ". $initiative_name " . IIRS_0_translation('is go!');
-      if (!$is_home_domain) $message .= "\n" . IIRS_0_translation('you will need to log in to') . ' <a target="_blank" href="http://transitionnetwork.org">Transition Network</a> ' . IIRS_0_translation('to manage your registration, NOT this website') . '.';
-      if ($tiID == 1) $message .= ' (testing mode, no save done)';
+      if (!$IIRS_is_home_domain) $message .= "\n" . IIRS_0_translation('you will need to log in to') . ' <a target="_blank" href="http://transitionnetwork.org">Transition Network</a> ' . IIRS_0_translation('to manage your registration, NOT this website') . '.';
+      if ($ti_ID == 1) $message .= ' (testing mode, no save done)';
       IIRS_0_set_message($message, $IIRS_widget_mode);
     ?>
 
     <form method="POST" id="IIRS_0_form_popup_domain_selection" action="summary_projects" class="IIRS_0_clear IIRS_0_formPopupNavigate"><div>
       <?php IIRS_0_printEncodedPostParameters(); ?>
-      <input name="userID" type="hidden" value="<?php print($userID); ?>" />
-      <input name="tiID" type="hidden" value="<?php print($tiID); ?>" />
+      <input name="userID" type="hidden" value="<?php print($user_ID); ?>" />
+      <input name="tiID" type="hidden" value="<?php print($ti_ID); ?>" />
 
       <div class="IIRS_0_h1"><?php print(IIRS_0_translation('website selection')); ?> </div>
       <ul id="IIRS_0_list_selector">
@@ -116,7 +122,7 @@ HTML;
           <input name="domain" class="IIRS_0_radio" value="none" type="radio" id="IIRS_0_domain_none_input" />
           <label for="IIRS_0_domain_none_input">
             <?php IIRS_0_print_translation('no website'); ?>
-            <div class="IIRS_0_status"><?php IIRS_0_print_translation("we don't currently have a website"); ?></div>
+            <div class="IIRS_0_status"><?php IIRS_0_print_translation('we do not currently have a website'); ?></div>
           </label>
         </li>
         <li id="IIRS_0_other">

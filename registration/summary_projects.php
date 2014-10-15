@@ -112,7 +112,7 @@ if ($domain_entered) {
 <div id="IIRS_0">
   <?php if (!$valid_dns) { ?>
     <div class="IIRS_0_errors">
-      <div class="IIRS_0_h1"><?php IIRS_0_print_translation("website [$domain_other] not valid"); ?></div>
+      <div class="IIRS_0_h1"><?php print(IIRS_0_translation('website') . " [$domain_other] " . IIRS_0_translation('not valid')); ?></div>
       <div class="IIRS_0_horizontal_section">
         <input class="IIRS_0_bigbutton IIRS_0_back IIRS_0_error_back" type="button" value="&lt;&lt; <?php IIRS_0_print_translation('back'); ?>" />
       </div>
@@ -125,7 +125,7 @@ if ($domain_entered) {
       <h3 class="IIRS_0_horizontal_section"><?php print(IIRS_0_translation('summary') . $summary_from_website); ?>:</h3>
       <textarea class="IIRS_0_textarea" name="summary"><?php print($summaryFromDomain); ?></textarea>
 
-      <?php if (IIRS_0_setting('imageEntry')) { ?>
+      <?php if (IIRS_0_setting('image_entry')) { ?>
         <script src="https://www.google.com/jsapi?key=<?php print($google_API_key); ?>" type="text/javascript"></script>
 
         <script language="Javascript" type="text/javascript">
@@ -168,9 +168,7 @@ if ($domain_entered) {
       </table>
       <div id="IIRS_0_details_teaser">
         <img src="<?php print($imageURLStem); ?>network_paper" />
-        <?php IIRS_0_print_translation('Your nearest Transition Town is only 4km away and we will connect them with you.
-        They have budget, and have done loads of stuff.
-        But you probably know that already don\'t you? :)'); ?>
+        <?php IIRS_0_print_translation('Your nearest Transition Town is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)'); ?>
       </div>
 
       <input disabled="1" class="IIRS_0_bigbutton" type="button" value="<?php IIRS_0_print_translation('add another thing'); ?>" />

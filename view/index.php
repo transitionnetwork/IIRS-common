@@ -1,84 +1,53 @@
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
-/* Manual Initiative Profile view page
- * NOTE: this should NOT normally be used
- * The framework system should show the posts / nodes / whatevers natively
- * thus using the local templating system and all fitting in rather nicely
- * use that page instead and override the edit function
- *
- * Redirect all TI editing to /IIRS/edit to prevent users from going in to the host framework editing suite
- */
-
 global $debug_environment;
 require_once('framework_abstraction_layer.php');
 require_once('utility.php');
 require_once('environment.php');
 print($debug_environment);
 
-//need to get a specific TI in this view
-$TI = IIRS_0_details_TI_user();
+// ------------------------------------------------------- external configuration
+// need to get a specific TI in this view
+// by default we use the users TI
+// but also this view can display one if already set
+// and also the mode to view the data is sent through:
+//   list_mode: true indicates that the TI is appearing in a list
+if ( ! isset( $TI )        ) $TI        = IIRS_0_details_TI_user();
+if ( ! isset( $list_mode ) ) $list_mode = false;
+$full_mode = ! $list_mode;
 
-$website = (empty($TI['domain']) ? 'currently no website' : '<a target="_blank" href="http://' . $TI['domain'] . '">website</a>');
+// ------------------------------------------------------- field pre-formatting
+$website   = ( empty( $TI['domain'] ) ? IIRS_0_translation( 'currently no website' ) : '<a target="_blank" href="http://' . $TI['domain'] . '">' . IIRS_0_translation( 'website' ) . '</a>' );
+$maps_href = "https://www.google.com/maps/@$TI[location_latitude],$TI[location_longitude],16z";
 ?>
 </pre></div>
 
-<script type="text/javascript">
-  //TODO: json_encode() is PHP 5 >= 5.2.0
-  //TODO: what does json_encode() do with null?
-  //var oTI = <?php print(json_encode($TI)); ?>;
-</script>
-
 <div id="IIRS_0">
-  <style>
-  #map-canvas {
-    width:100%;
-    height:300px;
-  }
-  </style>
-
-  <script type="text/javascript">
-    var map, mapOptions;
-    <?php IIRS_0_print_javascript_variable('sGoogleAPIKey', $google_API_key); ?>
-
-    //only show maps if there is an object to show
-    if (oTI) {
-      jQuery(document).ready(function(e){
-        var script   = document.createElement("script");
-        var callback = "IIRS_initialize_map";
-        script.type  = "text/javascript";
-        script.src   = "https://maps.googleapis.com/maps/api/js?key=" + sGoogleAPIKey + "&callback=" + callback;
-        document.body.appendChild(script);
-      });
-    }
-
-    function IIRS_initialize_map() {
-      mapOptions = {
-        center: new google.maps.LatLng(oTI.location_latitude, oTI.location_longitude),
-        zoom: 8
-      };
-      map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
-      sImage = g_sIIRSURLImageStem + '/' + (oTI.status == 'official' ? 'official' : 'muller') + '.png';
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(oTI.location_latitude, oTI.location_longitude),
-        map: map,
-        title: oTI.name,
-        icon: sImage
-      });
-      var infowindow = new google.maps.InfoWindow({
-        content: '<div id="content"><b>' + oTI.name + '</b><br/><p>' + oTI.summary + '</p></div>'
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(map,marker);
-      });
-    }
-  </script>
-
-  <div class="IIRS_0_h1"><?php print($TI['name']); ?>
-    <?php IIRS_0_print_language_selector(); ?>
+  <div>
+    <!-- the framework always prints the title -->
+    <?php if ( ! $list_mode ) IIRS_0_print_language_selector(); ?>
   </div>
+
   <div class="IIRS_0_website"><?php print($website); ?></div>
+
+  <?php if ( $list_mode ) { ?>
+    <a target="_blank" href="<?php print( $maps_href ); ?>">
+      <img class="IIRS_0_map_thumb" src="/IIRS/images/google_map_icon.png" />
+    </a>
+  <?php } ?>
+
   <p class="IIRS_0_summary"><?php print($TI['summary']); ?></p>
-  <!-- div id="map-canvas">map loading...</div -->
+
+  <?php if ( $full_mode ) { ?>
+    <div class="IIRS_0_map">
+      map loading...
+      <?php IIRS_0_print_HTML_encode_array( $TI ); ?>
+      <div class="markers">
+        <div class="TI">
+          <?php IIRS_0_print_HTML_encode_array( $TI ); ?>
+        </div>
+      </div>
+    </div>
+  <?php } ?>
 </div>

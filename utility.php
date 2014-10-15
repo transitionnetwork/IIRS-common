@@ -18,6 +18,12 @@ function IIRS_0_debug_print_inputs() {
   var_dump($_POST);
 }
 
+function IIRS_0_print_HTML_encode_array($values) {
+  foreach ($values as $key => $value) {
+    print("<div class=\"IIRS_0_HTML_data $key\">$value</div>\n");
+  }
+}
+
 //--------------------------------------------- translation, printing and escaping functions
 function IIRS_0_print_translation($sString, $escape = false) {
   $sTString = IIRS_0_translation($sString);
@@ -48,11 +54,6 @@ function IIRS_0_print_javascript_array($aArray) {
   }
   print(']');
 }
-function IIRS_0_register_translation($sString) {
-  $sTranslationID    = 'IIRS_translation_' . preg_replace('/[^a-z0-9]/i', '_', $sString);
-  $sTranslatedString = IIRS_0_translation($sString);
-  print("<div style=\"display:none;\" id=\"$sTranslationID\">$sTranslatedString</div>");
-}
 
 function IIRS_0_set_message_translated($sString, $IIRS_widget_mode = true) {
   return IIRS_0_set_message(IIRS_0_translation($sString, $IIRS_widget_mode));
@@ -81,18 +82,21 @@ function sort_date_desc($a, $b) {return $a['date'] < $b['date'];}
 //--------------------------------------------- language detection functions
 function IIRS_0_print_language_selector() {
   global $lang_list, $lang_code, $available_languages;
-  $html = '<select id="IIRS_0_language_control">';
-  foreach ($available_languages as $code) {
-    if (isset($lang_list[$code])) {
-      $details = $lang_list[$code];
-      $selected = ($code == $lang_code ? 'selected' : '');
-      $html .= <<<HTML
-        <option $selected value="$code">$details[1]</option>
+
+  if ( IIRS_0_setting( 'language_selector' ) ) {
+    $html = '<select id="IIRS_0_language_control">';
+    foreach ($available_languages as $code) {
+      if (isset($lang_list[$code])) {
+        $details = $lang_list[$code];
+        $selected = ($code == $lang_code ? 'selected' : '');
+        $html .= <<<HTML
+          <option $selected value="$code">$details[1]</option>
 HTML;
+      }
     }
+    $html .= '</select>';
+    print($html);
   }
-  $html .= '</select>';
-  print($html);
 }
 
 function IIRS_0_lookup_country_code_of_IPaddress($domain) {

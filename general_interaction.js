@@ -1,5 +1,62 @@
-//this static JavaScript file is valid for all scenarios
+// this static JavaScript file is valid for all scenarios
 if (!window.jQuery) alert('jQuery required');
+
+function IIRS_0_initialiseMaps() {
+  if (jQuery(".IIRS_0_map:not(.initialised)").length) {
+    // initialise only once
+    // in case another plugin has included maps
+    if (window.google) {
+      IIRS_0_showMaps();
+    } else {
+      var callback = "IIRS_0_showMaps";
+      var script   = document.createElement("script");
+      script.type  = "text/javascript";
+      script.src   = "https://maps.googleapis.com/maps/api/js?key=" + g_sGoogleAPIKey + "&callback=" + callback;
+      document.body.appendChild(script);
+    }
+  }
+}
+
+function IIRS_0_showMaps() {
+  jQuery(".IIRS_0_map:not(.initialised)").each(function(){
+    var jThis         = jQuery(this);
+    var fMapLatitude  = jThis.children(".location_latitude").text();
+    var fMapLongitude = jThis.children(".location_longitude").text();
+    var sZoom         = jThis.children(".zoom").text();
+    var jMarkers      = jThis.children(".markers").children();
+
+    // map
+    var oMapOptions = {
+      center: new google.maps.LatLng(fMapLatitude, fMapLongitude),
+      zoom: ( sZoom ? parseInt(sZoom) : 8 )
+    };
+    var oMap = new google.maps.Map(this, oMapOptions);
+
+    // markers
+    jMarkers.each(function(){
+      var jTI         = jQuery(this);
+      var fLatitude   = jTI.children(".location_latitude").text();
+      var fLongitude  = jTI.children(".location_longitude").text();
+      var sName       = jTI.children(".name").text();
+      var sImage      = g_sIIRSURLImageStem + "/" + (jTI.children(".status").text() == "official" ? "official" : "muller") + ".png";
+      var oMarker     = new google.maps.Marker({
+        position: new google.maps.LatLng(fLatitude, fLongitude),
+        map:      oMap,
+        title:    sName,
+        icon:     sImage
+      });
+      var oInfoWindow = new google.maps.InfoWindow({
+        content: '<div id=\"content\"><b><a href="/IIRS/view?ID=' + (jTI.children(".native_ID").text()) + '">' + sName + '</a></b></p></div>'
+      });
+      google.maps.event.addListener(oMarker, "click", function() {
+        oInfoWindow.open(oMap, oMarker);
+      });
+      console.log("adding TI [" + sName + "]")
+    });
+
+    jThis.addClass("initialised");
+  });
+}
 
 function IIRS_0_formCheckRequired(e) {
   var bValidForm = true;
@@ -43,7 +100,7 @@ function IIRS_0_setContent(sPlace, sHREF, oParameters, fCallback) {
   //indicate that the request result is to be displayed on a different website
   if (!oParameters) oParameters = [];
   oParameters.push({'name':'IIRS_widget_mode', 'value': 'true'});
-  oParameters.push({'name':'langCode', 'value': g_sLangCode});
+  oParameters.push({'name':'lang_code', 'value': g_sLangCode});
 
   //record for refresh and back purposes
   g_sLastSetContentArguments = g_sThisSetContentArguments;
@@ -98,6 +155,7 @@ function IIRS_0_newContentSetup(e) {
     jOtherLIs.removeClass("selected");
     jOtherLIs.find("input").removeAttr("checked");
   });
+  IIRS_0_initialiseMaps();
 }
 
 jQuery(document).bind("IIRS_0_newContent", IIRS_0_newContentSetup);
@@ -106,4 +164,3 @@ jQuery(document).ready(function(e){
   //for the plugin/module system and any initial load
   jQuery(this).trigger("IIRS_0_newContent");
 });
-

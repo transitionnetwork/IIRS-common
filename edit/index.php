@@ -32,6 +32,7 @@ if ( 'update account details' == $form ) {
     'email'    => $email,
     'password' => ( $pass == IIRS_0_CLEAR_PASSWORD ? NULL : $pass ),
   );
+  // TODO: if IIRS_0_TI_update_user fails? e.g. email => existing email
   IIRS_0_TI_update_user( $values );
 }
 
@@ -65,7 +66,7 @@ if ( IIRS_0_logged_in() ) {
   if ( $user = IIRS_0_details_user() ) {
     $name  = $user['name'];
     $email = $user['email'];
-    $phone = $user['phone'];
+    $phone = ( isset( $user['phone'] ) ? $user['phone'] : null );
 
     print( "loading TI [" . IIRS_0_CONTENT_TYPE . "] details...\n" );
     if ( $TI = IIRS_0_details_TI_user() ) {
@@ -161,7 +162,8 @@ if ( $towns_searched_for ) {
 
       <div id="IIRS_0_summary" class="IIRS_0_formfield">
         <label id="IIRS_0_summary_label">summary:</label>
-        <textarea id="IIRS_0_summary_input" class="IIRS_0_textarea" name="summary"><?php print( $summary ); ?></textarea>
+        <?php IIRS_0_HTML_editor($summary, 'iirseditor'); ?>
+        <textarea id="iirseditor" class="IIRS_0_textarea" name="summary"><?php print( $summary ); ?></textarea>
       </div>
 
       <input type="hidden" name="form" value="update transition initiative" />

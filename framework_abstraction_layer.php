@@ -18,9 +18,14 @@ if (!function_exists('IIRS_0_setting')) {
       case 'offer_buy_domains': return false;
       case 'add_projects': return false;
       case 'advanced_settings': return false;
-      case 'imageEntry': return false;
-      case 'langCode': return 'en';
-      case 'serverCountry': return NULL;
+      case 'image_entry': return false;
+      case 'lang_code': return 'en';
+      case 'server_country': return NULL;
+      case 'override_TI_display': return false;
+      case 'override_TI_editing': return true;
+      case 'override_TI_content_template': return true;
+      case 'language_selector': return false;
+      case 'thankyou_for_registering_url': return null;
       default: return false;
     }
   }
@@ -64,6 +69,14 @@ if (!function_exists('IIRS_0_current_path')) {
   }
 }
 
+if (!function_exists('IIRS_0_redirect')) {
+  function IIRS_0_redirect( $url ) {
+    $protocol = ( isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0' );
+    header( $protocol . ' 302 Moved Temporarily' );
+    $GLOBALS['http_response_code'] = 302;
+  }
+}
+
 if (!function_exists('IIRS_0_http_request')) {
   function IIRS_0_http_request($url) {
     return file_get_contents($url, 'r');
@@ -99,6 +112,53 @@ if (!function_exists('IIRS_0_available_languages')) {
   }
 }
 
+if (!function_exists('IIRS_0_URL_view_TI')) {
+  function IIRS_0_URL_view_TI() {
+    IIRS_0_set_message('IIRS_0_URL_view_TI() not supported');
+    return NULL;
+  }
+}
+
+if (!function_exists('IIRS_0_URL_edit_TI')) {
+  function IIRS_0_URL_edit_TI() {
+    IIRS_0_set_message('IIRS_0_URL_edit_TI() not supported');
+    return NULL;
+  }
+}
+
+if (!function_exists('IIRS_0_HTML_editor')) {
+  function IIRS_0_HTML_editor($content, $HTML_ID) {
+    IIRS_0_set_message('IIRS_0_HTML_editor() not supported');
+    return NULL;
+  }
+}
+
+if (!function_exists('IIRS_0_TI_verify_add_TI')) {
+  function IIRS_0_TI_verify_add_TI($user_ID, $IIRS_host_domain, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain) {
+    // on success returns the native TI ID
+    // on failure returns NULL
+    $ret = null;
+
+    // check data input
+    if (
+         is_numeric( $location_latitude )
+      && is_numeric( $location_longitude )
+      && akismet_check_ti_registration_name( $initiative_name )
+    ) {
+      // ask host framework to add the TI
+      $ret = IIRS_0_TI_add_TI( $user_ID, $IIRS_host_domain, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain );
+    }
+
+    return $ret;
+  }
+}
+
+if (!function_exists('IIRS_0_language_is_supported')) {
+  function IIRS_0_language_is_supported() {
+    return in_array( IIRS_0_locale(), IIRS_0_languages() );
+  }
+}
+
 
 //--------------------------------------------------- required functions
 if (true) {
@@ -110,6 +170,7 @@ if (true) {
 
   //registering
   if (!function_exists('IIRS_0_TI_add_user'))      {print('IIRS_0_TI_add_user() required'); exit;}
+  if (!function_exists('IIRS_0_delete_user'))      {print('IIRS_0_delete_user() required'); exit;}
   if (!function_exists('IIRS_0_TI_add_TI'))        {print('IIRS_0_TI_add_TI() required'); exit;}
   if (!function_exists('IIRS_0_TI_update_TI'))     {print('IIRS_0_TI_update_TI() required'); exit;}
   if (!function_exists('IIRS_0_TI_update_user'))   {print('IIRS_0_TI_update_user() required'); exit;}
@@ -118,5 +179,10 @@ if (true) {
   //authentication
   if (!function_exists('IIRS_0_logged_in'))        {print('IIRS_0_logged_in() required'); exit;}
   if (!function_exists('IIRS_0_login'))            {print('IIRS_0_login() required'); exit;}
+
+  //misc
+  if (!function_exists('IIRS_0_framework'))        {print('IIRS_0_framework() required'); exit;}
+  if (!function_exists('IIRS_0_locale'))           {print('IIRS_0_locale() required'); exit;}
+  if (!function_exists('IIRS_0_languages'))        {print('IIRS_0_languages() required'); exit;}
 }
 ?>

@@ -2,7 +2,7 @@
   font-size:10px;
   line-height:11px;
   padding:0px;
-  display:anone;
+  adisplay:none;
   background-color:#ffefef;
   border:1px dotted red;
 }
@@ -16,6 +16,10 @@
   color:#aaaaaa;
   font-size:11px;
   font-weight:normal;
+}
+.IIRS_0_map_thumb {
+  float:right;
+  padding:1px;
 }
 
 /* ---------------------------------------------------------------- IIRS base list selection CSS: override by host */
@@ -79,6 +83,13 @@ body #IIRS_0_list_selector .IIRS_0_button {
   list-style:none;
   margin-left:0px;
 }
+.IIRS_0_HTML_data {
+  display:none;
+}
+.IIRS_0_map {
+  width:100%;
+  height:300px;
+}
 .IIRS_0_status {
   color:#666666;
   font-size:14px;
@@ -103,6 +114,10 @@ body #IIRS_0_list_selector .IIRS_0_button {
   padding:3px;
   font-size:11px;
   margin:10px;
+}
+body .IIRS_0_disabled {
+  color:#999999;
+  /* text-decoration:none; */
 }
 #IIRS_0 .IIRS_0_error_back {
   font-weight:bold;

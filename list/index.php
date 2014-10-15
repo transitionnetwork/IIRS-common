@@ -16,8 +16,8 @@ require_once('utility.php');
 require_once('environment.php');
 print($debug_environment);
 
-$aAllTIs = IIRS_0_TIs_all();
-usort($aAllTIs, 'sort_date_desc');
+$all_TIs = IIRS_0_TIs_all();
+usort($all_TIs, 'sort_date_desc');
 
 $usersTI = IIRS_0_details_TI_user();
 ?>
@@ -34,13 +34,13 @@ $usersTI = IIRS_0_details_TI_user();
 
   <ul id="list" class="IIRS_0_bare_list">
     <?php
-      foreach ($aAllTIs as $TI) {
+      foreach ($all_TIs as $TI) {
         $date      = $TI['date'];
         $editable  = ($usersTI && $usersTI['native_ID'] == $TI['native_ID']);
         $edit_link = ($editable ? '<a class="IIRS_0_edit_link post-edit-link" href="/IIRS/edit">' . IIRS_0_translation('edit') . '</a>' : '');
         $html      = <<<"HTML"
         <li>
-          <h2 class="entry-title"><a href="/IIRS/view">$TI[name]</a></h2>
+          <h2 class="entry-title"><a href="/IIRS/view?ID=$TI[native_ID]">$TI[name]</a></h2>
           <div class="entry-meta">
             <span class="edit-link">$edit_link</span>
           </div>
