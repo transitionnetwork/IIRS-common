@@ -1,26 +1,30 @@
 <?php
-require_once('keys.php');
-require_once('framework_abstraction_layer.php');
+require_once( IIRS__COMMON_DIR . 'define.php' );     // IIRS plugin settings fixed for this version
+require_once( IIRS__COMMON_DIR . 'IIRS_Error.php' ); // Error object. check for this return with IIRS_is_error( $ret )
+require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
+require_once( IIRS__COMMON_DIR . 'whois.php' );
+
 //hold the debug in a string because some functions output headers later
 global $debug_environment;
 $debug_environment = '';
 
 //---------------------------------------------------------- misc settings
-//?IIRS_widget_mode=true is sent through by the JavaScript widget on all requests
-define('IIRS_0_CLEAR_PASSWORD', '****');
+global $IIRS_widget_mode, $IIRS_plugin_mode, $IIRS_0_default_lat, $IIRS_0_default_lng;
 $IIRS_widget_mode     = (IIRS_0_input('IIRS_widget_mode') == 'true');
-$IIRS_plugin_mode     = !$IIRS_widget_mode;
-if ($IIRS_widget_mode) header('Access-Control-Allow-Origin: *'); //allow cross domain AJAX access to this page
-$transition_namespace = 'http://transitionnetwork.org/namespaces/2014/transition';
-$default_lat          = 52.1359783;
-$default_lng          = -0.4666513;
+$IIRS_plugin_mode     = ! $IIRS_widget_mode;
+$IIRS_0_default_lat   = 52.1359783;
+$IIRS_0_default_lng   = -0.4666513;
+
+// ...?IIRS_widget_mode=true is sent through by the JavaScript widget on all requests
+// Access-Control-Allow-Origin is required by AJAX calls from teh widget
+if ( $IIRS_widget_mode ) header('Access-Control-Allow-Origin: *'); //allow cross domain AJAX access to this page
 
 //---------------------------------------------------------- directories
 //this system accepts a strict URL structure for IIRS calls:
 //  /IIRS/<widget_folder>/<page>
 $IIRS_common_dir    = __DIR__;                                //var/www/IIRS_common (sym linked on dev)
 $IIRS_image_dir     = "$IIRS_common_dir/images";              //var/www/IIRS_common/images (sym linked on dev)
-$current_path        = IIRS_0_current_path();                  // /IIRS/registration/index
+$current_path        = IIRS_0_current_path();                 // /IIRS/registration/index
 //$dirs:
 // note that PREG_SPLIT_NO_EMPTY ignores trailing slashes and empty strings
 //    [IIRS]
@@ -51,19 +55,21 @@ $process_group      = $last_directory;                        // registration
 //---------------------------------------------------------- URLs
 //useful URL bases for the various HREFs to IIRS content from the widget scenario
 //so that we can make more requests from the same domain
-global $IIRS_host_domain, $IIRS_user_ip, $IIRS_user_agent, $IIRS_HTTP_referer;
+global $IIRS_host_domain, $IIRS_user_ip, $IIRS_user_agent, $IIRS_HTTP_referer, $IIRS_host_TLD;
 global $IIRS_is_home_domain, $IIRS_is_dev_domain;
 global $IIRS_domain_stem, $IIRS_URL_stem, $IIRS_URL_common_stem, $IIRS_URL_process_stem, $IIRS_URL_image_stem;
-$IIRS_host_domain      = $_SERVER['HTTP_HOST'];                     //blah.com $_SERVER PHP >= 4.1.0
-$IIRS_user_ip          = $_SERVER['REMOTE_ADDR'];                   //92.160.10.12
-$IIRS_user_agent       = $_SERVER['HTTP_USER_AGENT'];               //Mozilla etc.
+$IIRS_host_domain      = $_SERVER['HTTP_HOST'];                     // blah.com $_SERVER PHP >= 4.1.0
+$IIRS_host_parts       = explode( '.', $IIRS_host_domain );
+$IIRS_host_TLD         = end( $IIRS_host_parts );                   // com
+$IIRS_user_ip          = $_SERVER['REMOTE_ADDR'];                   // 92.160.10.12
+$IIRS_user_agent       = $_SERVER['HTTP_USER_AGENT'];               // Mozilla etc.
 $IIRS_HTTP_referer     = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
 $request_protocol      = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http');
 $IIRS_is_home_domain   = ($IIRS_host_domain == 'transitionnetwork.org'); //live setup
 $IIRS_is_dev_domain    = ($IIRS_host_domain == 'tnv3.dev');              //debug settings only
 $IIRS_domain_stem      = "$request_protocol://$IIRS_host_domain";        // http://blah.com
 $IIRS_URL_stem         = "$IIRS_domain_stem/$plugin_directory";     // http://blah.com/IIRS
-$IIRS_URL_common_stem  = "$IIRS_URL_stem/IIRS_common";              // http://blah.com/IIRS/IIRS_common
+$IIRS_URL_common_stem  = "$IIRS_URL_stem";                          // http://blah.com/IIRS
 $IIRS_URL_process_stem = "$IIRS_URL_stem/$process_group";           // http://blah.com/IIRS/registration
 $IIRS_URL_image_stem   = "$IIRS_URL_stem/images";                   // http://blah.com/IIRS/images
 
@@ -76,6 +82,7 @@ $debug_environment .= "prefix_directory: $prefix_directory\n";
 $debug_environment .= "plugin_directory: $plugin_directory\n";
 $debug_environment .= "process_group: $process_group\n";
 $debug_environment .= "IIRS_host_domain: $IIRS_host_domain\n";
+$debug_environment .= "IIRS_host_TLD: $IIRS_host_TLD\n";
 $debug_environment .= "request_protocol: $request_protocol\n";
 $debug_environment .= "IIRS_is_home_domain: $IIRS_is_home_domain\n";
 $debug_environment .= "IIRS_is_dev_domain: $IIRS_is_dev_domain\n";
@@ -100,6 +107,7 @@ $debug_environment .= "\n";
 //     this requires that the web-server is IN the appropriate country!
 //     works for plugin (this server) as for JavaScript widget (the referer server)
 //  4) Unknown: admin message the installer to carry out (1)
+$debug_environment .= "-------------- Language resolution\n";
 $country_domain  = NULL;
 $whoIs_entries   = NULL;
 $language_domain = NULL;
@@ -118,7 +126,7 @@ if (empty($server_country)) {
     $country_domain    = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $IIRS_HTTP_referer);
   }
   /*
-  if ($whoIs_entries || ($whoIs_entries = whois($country_domain))) {
+  if ($whoIs_entries || ($whoIs_entries = IIRS_0_whois($country_domain))) {
     if     (in_array($whoIs_entries['Registrant Country'], $available_languages)) $server_country = $whoIs_entries['Registrant Country'];
     elseif (in_array($whoIs_entries['Admin Country'], $available_languages))      $server_country = $whoIs_entries['Admin Country'];
     elseif (in_array($whoIs_entries['Tech Country'], $available_languages))       $server_country = $whoIs_entries['Tech Country'];
@@ -173,7 +181,7 @@ if (empty($server_country)) {
 
 //language lists (code from Drupal 8.0)
 global $lang_list, $lang_code, $available_languages;
-$lang_list           = getStandardLanguageList();   //FULL list of language codes
+$lang_list           = IIRS_0_getStandardLanguageList();   //FULL list of language codes
 $available_languages = IIRS_0_available_languages(); //e.g. [en, hu, sp] only translations that are available on this server
 $lang_code           = '';
 $lang_code_warning    = NULL; //e.g. the specified language is not available
@@ -195,7 +203,7 @@ if (empty($lang_code)) {
 //------- 2) users laptop language preferences
 if (empty($lang_code)) {
   if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-    $lang_code = getBestMatchingLangcode($_SERVER['HTTP_ACCEPT_LANGUAGE'], $available_languages);
+    $lang_code = IIRS_0_getBestMatchingLangcode($_SERVER['HTTP_ACCEPT_LANGUAGE'], $available_languages);
     if (!empty($lang_code)) $debug_environment .= "2) users laptop language preferences: [$lang_code]\n";
   }
 }
@@ -216,14 +224,19 @@ if (empty($lang_code)) {
 if (empty($lang_code)) {
   $language_domain     = $IIRS_host_domain;
   if ($IIRS_widget_mode) {
-    $IIRS_HTTP_referer      = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
+    $IIRS_HTTP_referer = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : NULL);
     $language_domain   = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $IIRS_HTTP_referer);
   }
-  if ($whoIs_entries || ($whoIs_entries = whois($language_domain))) {
-    if     (in_array($whoIs_entries['Registrant Country'], $available_languages)) $lang_code = $whoIs_entries['Registrant Country'];
-    elseif (in_array($whoIs_entries['Admin Country'], $available_languages))      $lang_code = $whoIs_entries['Admin Country'];
-    elseif (in_array($whoIs_entries['Tech Country'], $available_languages))       $lang_code = $whoIs_entries['Tech Country'];
+
+  /* WHOIS lookups are disabled at the moment
+  if ($whoIs_entries || ($whoIs_entries = IIRS_0_whois($language_domain))) {
+    if ( $whoIs_entries && ! IIRS_is_error( $whoIs_entries ) ) {
+      if     (in_array($whoIs_entries['Registrant Country'], $available_languages)) $lang_code = $whoIs_entries['Registrant Country'];
+      elseif (in_array($whoIs_entries['Admin Country'], $available_languages))      $lang_code = $whoIs_entries['Admin Country'];
+      elseif (in_array($whoIs_entries['Tech Country'], $available_languages))       $lang_code = $whoIs_entries['Tech Country'];
+    }
   }
+  */
 }
 
 //------- 5) host web-server location usual language (ip location lookup)

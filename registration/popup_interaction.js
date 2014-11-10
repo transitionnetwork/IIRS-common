@@ -3,7 +3,7 @@
  * separately called by loaders and changes
  * used by all implementations of the IIRS process
  */
-function attachRegistrationPopupEvents() {
+function IIRS_0_attachRegistrationPopupEvents() {
   //----------------------------- nav buttons
   jQuery("#IIRS_0_form_popup_advanced").submit(function(e){
     jPopup.fadeOut(400);
@@ -19,10 +19,10 @@ function attachRegistrationPopupEvents() {
   jQuery("#IIRS_0_research").unbind("click").click(function(e){
     //needed to unbind the general handler for re-search
 
-    //get new townname
-    var sNewTownName = jQuery("#IIRS_0_research_townname_new").val();
+    //get new town_name
+    var sNewTownName = jQuery("#IIRS_0_research_town_name_new").val();
     var aArguments   = Array.prototype.slice.call(g_sThisSetContentArguments, 0);
-    aArguments[2]    = [{"name":"townname", "value":sNewTownName}];
+    aArguments[2]    = [{"name":"town_name", "value":sNewTownName}];
 
     //set content
     IIRS_0_setContent.apply(this, aArguments);
@@ -49,5 +49,5 @@ function attachRegistrationPopupEvents() {
 }
 
 //attach events on content change
-jQuery(document).bind("IIRS_0_newContent", attachRegistrationPopupEvents);
+jQuery(document).bind("IIRS_0_newContent", IIRS_0_attachRegistrationPopupEvents);
 

@@ -1,62 +1,73 @@
 <?php
-// view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translation
+// view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translated_HTML_text
 $start_directory    = ( isset($_GET['start_directory']) ? $_GET['start_directory'] : dirname(__FILE__) );
 $fix_file           = ( $_GET['fix_file'] );
 $standard_wordpress = ( ! isset( $_GET['standard'] ) || $_GET['standard'] == 'wordpress' );
 $standard_drupal    = ( isset( $_GET['standard'] ) && $_GET['standard'] == 'drupal' );
+$include_common     = ( $_GET['include_common'] == 'true' );
 ?>
 
 <h1>file report</h1>
 <p>
   <a href="?standard=wordpress">check against WordPress standard</a>
+  | <a href="?standard=drupal">check against Drupal standard</a>
+  | <a href="?include_common=true">check IIRS_common</a>
+  | <a href="?start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS/">scan IIRS WordPress plugin</a>
 </p>
 
 <?php
 // get all file paths
-$files           = IIRS_0_recurse_directory($start_directory);
+$files = IIRS_0_recurse_directory($start_directory);
 
 // analyse and update contents
 foreach ($files as $file) {
   $extension = substr(strrchr($file, '.'), 1);
   $points    = array();
   $content   = file_get_contents($file);
-  $fix_this  = ( $fix_file == $file );
+  $fix_this  = ( $fix_file == $file ); // NOT_CURRENTLY_USED
 
   if ( $extension == 'js' && $standard_wordpress ) {
     // ----------------------------------------------------------------------- Javascript PHP
     // filename
-    if ( strstr( $file, '_' ) !== FALSE ) {
-      array_push( $points, 'filename contains underscores (_)');
+    if ( strstr( strrchr($file, '/'), '_' ) !== FALSE ) {
+      // array_push( $points, 'filename contains underscores (_)' );
     }
 
     // brackets
+    /*
     if ( $num_matches = preg_match_all('/[a-zA-Z0-9_]+\([^ )][^)]*\)/', $content, $new_matches) ) {
-      if ( $fix_this ) {
-        $points = array_merge($points, $new_matches[0]);
-      } else {
-        $points = array_merge($points, $new_matches[0]);
-      }
+      foreach ($new_matches[0] as $new_match) array_push( $points, 'brackets without spaces:' . $new_match );
+    }
+    */
+
+    // sandboxed function names
+    if ( $num_matches = preg_match_all('/^\s*function\s+((?!IIRS_)[a-zA-Z0-9_]+)\(/m', $content, $new_matches) ) {
+      foreach ($new_matches[0] as $new_match) array_push( $points, 'function not sandboxed with IIRS_:' . $new_match );
     }
 
   } elseif ( $extension == 'php' && $standard_wordpress ) {
     // ----------------------------------------------------------------------- WordPress PHP
     // filename
-    if ( strstr( $file, '-' ) !== FALSE ) {
-      array_push( $points, 'filename contains dashes (-)');
+    if ( strstr( strrchr($file, '/'), '-' ) !== FALSE ) {
+      // array_push( $points, 'filename contains dashes (-)');
     }
 
     // brackets
     if ( $num_matches = preg_match_all('/[a-zA-Z0-9_]+\([^ )][^)]*\)/', $content, $new_matches) ) {
-      if ( $fix_this ) {
-        $points = array_merge($points, $new_matches[0]);
-      } else {
-        $points = array_merge($points, $new_matches[0]);
-      }
+      // foreach ($new_matches[0] as $new_match) array_push($points, 'brackets without spaces:' . $new_match);
     }
 
     // variable naming
-    $num_matches = preg_match_all('/$[a-zA-Z0-9_]*[a-z]+[A-Z]/', $content, $new_matches);
-    if ($num_matches) $points = array_merge($points, $new_matches[0]);
+    if ( $num_matches = preg_match_all( '/$[a-zA-Z0-9_]*[a-z]+[A-Z]/', $content, $new_matches ) ) {
+      foreach ($new_matches[0] as $new_match) array_push($points, 'variable naming:' . $new_match);
+    }
+
+    // sandboxed function names
+    // ignore class functions
+    if ( $num_matches = preg_match_all('/^\s*function\s+((?!IIRS_)[a-zA-Z0-9_]+)\(/m', $content, $new_matches) ) {
+      foreach ($new_matches[0] as $new_match) array_push( $points, 'function not sandboxed with IIRS_:' . $new_match );
+    }
+
   }
 
   // output
@@ -71,8 +82,6 @@ foreach ($files as $file) {
 }
 
 
-
-
 function IIRS_0_recurse_directory($base_dir) {
   $files = array();
   foreach (scandir($base_dir) as $file) {
@@ -80,6 +89,8 @@ function IIRS_0_recurse_directory($base_dir) {
          empty($file)
       || $file == '.' || $file == '..'
       || $file[0] == '.'
+      || $file == 'jquery'
+      || ( $file == 'IIRS_common' || $include_common )
     ) ) {
       $full_path = $base_dir.DIRECTORY_SEPARATOR.$file;
       if (is_dir($full_path)) {

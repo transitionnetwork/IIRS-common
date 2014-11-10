@@ -5,15 +5,15 @@
  */
 var oNameInput, oEmailInput, sOrigTownValue;
 
-function attachRegistrationInteractionEvents() {
+function IIRS_0_attachRegistrationInteractionEvents() {
   //----------------------------------------- hints
-  //TODO: make this generic
-  sOrigTownValue = jQuery("#IIRS_0_townname").val();
-  jQuery("#IIRS_0_townname").focus(function(e){
+  //TODO: make these input hints generic
+  sOrigTownValue = jQuery("#IIRS_0_town_name").val();
+  jQuery("#IIRS_0_town_name").focus(function(e){
     if (jQuery(this).val() == sOrigTownValue) jQuery(this).val('');
     jQuery(this).removeClass("IIRS_0_hint");
   });
-  jQuery("#IIRS_0_townname").blur(function(e){
+  jQuery("#IIRS_0_town_name").blur(function(e){
     if (jQuery(this).val() == '') {
       jQuery(this).val(sOrigTownValue);
       jQuery(this).addClass("IIRS_0_hint");
@@ -21,7 +21,7 @@ function attachRegistrationInteractionEvents() {
   });
 
   //----------------------------- place selector
-  jQuery("#IIRS_0_research_townname_new").keypress(function(e){
+  jQuery("#IIRS_0_research_town_name_new").keypress(function(e){
     if (e.which == 13) {
       jQuery("#IIRS_0_research").click();
       e.preventDefault();
@@ -30,15 +30,15 @@ function attachRegistrationInteractionEvents() {
   jQuery("#IIRS_0_research").click(function(e){
     //note that this click will be overridden by the popup.js
 
-    //get new townname
-    var sNewTownName = jQuery("#IIRS_0_research_townname_new").val();
+    //get new town_name
+    var sNewTownName = jQuery("#IIRS_0_research_town_name_new").val();
     var oParameters  = [];
 
     if (!sNewTownName) {
       if (window.IIRS_0_message) window.IIRS_0_message(g_tFormNotValid);
       else alert(g_tFormNotValid);
     } else {
-      oParameters.push({"name":"townname", "value":sNewTownName});
+      oParameters.push({"name":"town_name", "value":sNewTownName});
       //set content
       IIRS_0_postAsForm(document.location, oParameters);
     }
@@ -60,7 +60,8 @@ function attachRegistrationInteractionEvents() {
   jQuery("#IIRS_0_form_popup_location_general").submit(function(e){
     var jForm = jQuery(this);
     var rxEmail = /^[a-z0-9._%+-]+@[a-z0-9._-]+\.[a-z]+$/i;
-    var ret = true;
+    var bValidForm = true;
+
     //only check it if it has been sent through
     //the required check will catch it if it is empty
     if (oEmailInput.val() && !rxEmail.test(oEmailInput.val())) {
@@ -69,24 +70,27 @@ function attachRegistrationInteractionEvents() {
       jForm.addClass("IIRS_0_form_validation_fail");
       e.preventDefault();
       e.stopPropagation();
-      ret = false;
+      bValidForm = false;
     } else {
       jForm.removeClass("IIRS_0_form_validation_fail");
     }
-    return ret;
+
+    return bValidForm;
   });
 
   jQuery("#IIRS_0_form_popup_domain_selection").unbind("submit").submit(function(e){
-    var ret = true;
+    var bValidForm = true;
+
     if (!(jQuery("input[name='domain_other']").val() || jQuery("input[name='domain']:checked").val())) {
       //failed checks
       if (window.IIRS_0_message) window.IIRS_0_message(g_tDomainRequired);
       else alert(g_tDomainRequired);
       e.preventDefault();
       e.stopPropagation();
-      ret = false;
+      bValidForm = false;
     }
-    return ret;
+
+    return bValidForm;
   });
 }
 
@@ -100,5 +104,5 @@ function IIRS_0_emailChange(e) {
 }
 
 //attach events on content change
-jQuery(document).bind("IIRS_0_newContent", attachRegistrationInteractionEvents);
+jQuery(document).bind("IIRS_0_newContent", IIRS_0_attachRegistrationInteractionEvents);
 

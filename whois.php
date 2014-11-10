@@ -1,9 +1,10 @@
 <?php
-function whois($domain) {
+function IIRS_0_whois($domain) {
   $aAssocEntries = NULL;
 
-  if     (validateIP($domain))     $whois_text = lookupIP($domain);
-  elseif (validateDomain($domain)) $whois_text = lookupDomain($domain);
+  IIRS_0_debug_print( "whois lookup of [$domain]..." );
+  if     (IIRS_0_validateIP($domain))     $whois_text = IIRS_0_lookupIP($domain);
+  elseif (IIRS_0_validateDomain($domain)) $whois_text = IIRS_0_lookupDomain($domain);
 
   //$whois_text may contain an error
   if ($whois_text) {
@@ -12,6 +13,18 @@ function whois($domain) {
     foreach ($aEntries as $entry) {
       $aEntry = explode(":", $entry);
       if (count($aEntry) == 2) $aAssocEntries[$aEntry[0]] = $aEntry[1];
+    }
+
+    // Error?
+    // array(1) { ["Error"] => string(54) " No appropriate Whois server found for abc.com domain!" }
+    if ( count( $aAssocEntries ) == 1 && isset( $aAssocEntries['Error'] ) ) {
+      $message        = 'Could not find extended information about your website';
+      $message_detail = $aAssocEntries['Error'];
+      if ( $message_detail == "No appropriate Whois server found for $domain domain!" ) {
+        $aAssocEntries = new IIRS_Error( IIRS_WHOIS_NO_DOMAIN_SERVER, $message, $message_detail, IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+      } else {
+        $aAssocEntries = new IIRS_Error( IIRS_WHOIS_ERROR, $message, $message_detail, IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+      }
     }
   }
 
@@ -280,7 +293,7 @@ $whoisservers = array(
         "yt" => "whois.nic.yt", // Mayotte
         "yu" => "whois.ripe.net");
 
-function lookupDomain($domain){
+function IIRS_0_lookupDomain($domain){
         global $whoisservers;
         $domain_parts = explode(".", $domain);
         $tld = strtolower(array_pop($domain_parts));
@@ -288,7 +301,7 @@ function lookupDomain($domain){
         if(!$whoisserver) {
                 return "Error: No appropriate Whois server found for $domain domain!";
         }
-        $result = queryWhoisServer($whoisserver, $domain);
+        $result = IIRS_0_queryWhoisServer($whoisserver, $domain);
         if(!$result) {
                 return "Error: No results retrieved from $whoisserver server for $domain domain!";
         }
@@ -297,7 +310,7 @@ function lookupDomain($domain){
                         preg_match("/Whois Server: (.*)/", $result, $matches);
                         $secondary = $matches[1];
                         if($secondary) {
-                                $result = queryWhoisServer($secondary, $domain);
+                                $result = IIRS_0_queryWhoisServer($secondary, $domain);
                                 $whoisserver = $secondary;
                         }
                 }
@@ -305,7 +318,7 @@ function lookupDomain($domain){
         return "$domain domain lookup results from $whoisserver server:\n\n" . $result;
 }
 
-function lookupIP($ip) {
+function IIRS_0_lookupIP($ip) {
         $whoisservers = array(
                 //"whois.afrinic.net", // Africa - returns timeout error :-(
                 "whois.lacnic.net", // Latin America and Caribbean - returns data for ALL locations worldwide :-)
@@ -315,7 +328,7 @@ function lookupIP($ip) {
         );
         $results = array();
         foreach($whoisservers as $whoisserver) {
-                $result = queryWhoisServer($whoisserver, $ip);
+                $result = IIRS_0_queryWhoisServer($whoisserver, $ip);
                 if($result && !in_array($result, $results)) {
                         $results[$whoisserver]= $result;
                 }
@@ -327,7 +340,7 @@ function lookupIP($ip) {
         return $res;
 }
 
-function validateIP($ip) {
+function IIRS_0_validateIP($ip) {
         $ipnums = explode(".", $ip);
         if(count($ipnums) != 4) {
                 return false;
@@ -340,14 +353,14 @@ function validateIP($ip) {
         return $ip;
 }
 
-function validateDomain($domain) {
+function IIRS_0_validateDomain($domain) {
         if(!preg_match("/^([-a-z0-9]{2,100})\.([a-z\.]{2,8})$/i", $domain)) {
                 return false;
         }
         return $domain;
 }
 
-function queryWhoisServer($whoisserver, $domain) {
+function IIRS_0_queryWhoisServer($whoisserver, $domain) {
         $port = 43;
         $timeout = 10;
         $fp = @fsockopen($whoisserver, $port, $errno, $errstr, $timeout) or die("Socket Error " . $errno . " - " . $errstr);

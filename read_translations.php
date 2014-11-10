@@ -1,7 +1,12 @@
 <?php
+global $debug_environment;
+require_once( IIRS__COMMON_DIR . 'utility.php' );
+require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
+require_once( IIRS__COMMON_DIR . 'environment.php' );
+
 header('Content-type: text/plain;', true);
 
-// view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translation
+// view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translated_HTML_text
 $start_directory = (isset($_GET['start_directory']) ? $_GET['start_directory'] : dirname(__FILE__));
 $format          = $_GET['format'];
 $matches         = array();
@@ -16,13 +21,13 @@ foreach ($files as $file) {
   // IIRS translations
   $num_matches = preg_match_all('/IIRS_0_translation\(\s*\'([^\']+)/',       $content, $new_matches);
   if ($num_matches) $matches = array_merge($matches, $new_matches[1]);
-  $num_matches = preg_match_all('/IIRS_0_print_translation\(\s*\'([^\']+)/', $content, $new_matches);
+  $num_matches = preg_match_all('/IIRS_0_print_translated_HTML_text\(\s*\'([^\']+)/', $content, $new_matches);
   if ($num_matches) $matches = array_merge($matches, $new_matches[1]);
 
   // these one here to catch the occassional $widget_folder translations
   $num_matches = preg_match_all('/IIRS_0_translation\(\s*"([^"]+)/',         $content, $new_matches);
   if ($num_matches) $matches = array_merge($matches, $new_matches[1]);
-  $num_matches = preg_match_all('/IIRS_0_print_translation\(\s*"([^"]+)/',         $content, $new_matches);
+  $num_matches = preg_match_all('/IIRS_0_print_translated_HTML_text\(\s*"([^"]+)/',         $content, $new_matches);
   if ($num_matches) $matches = array_merge($matches, $new_matches[1]);
 
   //Wordpress specific
@@ -39,10 +44,10 @@ switch ($format) {
     print("# PO language file for the IIRS project\n");
     print("# https://www.gnu.org/savannah-checkouts/gnu/gettext/manual/html_node/PO-Files.html\n");
     print("# Project-Id-Version: TransitionNetwork IIRS\n");
-    print("# Report-Msgid-Bugs-To: Annesley Newholm <annesley_newholm@yahoo.it>\n");
+    print("# Report-Msgid-Bugs-To: Transition Network IIRS team <" . IIRS_EMAIL_TEAM_EMAIL . ">\n");
     print("# POT-Creation-Date: 2014-07-21 04:00+0730\n");
     print("# PO-Revision-Date: 2014-07-21 04:00+0730\n");
-    print("# Last-Translator: Annesley Newholm <annesley_newholm@yahoo.it>\n");
+    print("# Last-Translator: Transition Network IIRS team <" . IIRS_EMAIL_TEAM_EMAIL . ">\n");
     print("# Number-Translations: " . count($matches) . "\n");
     print("# Folder: " . $start_directory . "\n");
     print("# URL: /wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=$format&start_directory=$start_directory\n");
@@ -69,12 +74,12 @@ switch ($format) {
     foreach ($matches as $match) {
       if (strstr($match, '$')) {
         print("// ---------------------------------------------------------------- variable detected\n");
-        print("// __('$match','iirs');\n");
+        print("// __( '$match', 'iirs' );\n");
       } elseif (strstr($match, '\\')) {
         print("// ---------------------------------------------------------------- escape detected\n");
-        print("// __('$match','iirs');\n");
+        print("// __( '$match', 'iirs' );\n");
       } else {
-        print("__('$match','iirs');\n");
+        print("__( '$match', 'iirs' );\n");
       }
     }
     print('?>');

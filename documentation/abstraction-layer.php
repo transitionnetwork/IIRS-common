@@ -8,11 +8,11 @@
   <li>IIRS_0_translation($string_to_translate)</li>
   <li>IIRS_0_input($sKey)</li>
   <li>IIRS_0_setting($setting)</li>
-  <li>IIRS_0_TI_is_registered($town_name, $location_latitude, $location_longitude, $location_description)</li>
+  <li>IIRS_0_TI_search_result_already_registered($town_name, $location_latitude, $location_longitude, $location_description)</li>
   <li>IIRS_0_current_path()</li>
   <li>IIRS_0_http_request($url)</li>
   <li>IIRS_0_redirect($url)</li>
-  <li>IIRS_0_set_message($message, $IIRS_widget_mode = true)</li>
+  <li>IIRS_0_set_message($message)</li>
   <li>IIRS_0_details_TI_page()</li>
   <li>IIRS_0_TIs_all($page_size = 0, $page_offset = 0)</li>
   <li>IIRS_0_available_languages()</li>
@@ -23,7 +23,6 @@
 <h4>//--------------------------------------------------- querying</h4>
 <ul>
   <li>IIRS_0_TIs_nearby()</li>
-  <li>IIRS_0_TIs_viewport()</li>
   <li>IIRS_0_details_user()</li>
   <li>IIRS_0_details_TI_user()</li>
 </ul>

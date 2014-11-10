@@ -4,10 +4,10 @@ debug output:
 /* TODO: complete the search function
  */
 global $debug_environment;
-require_once('framework_abstraction_layer.php');
-require_once('utility.php');
-require_once('environment.php');
-print($debug_environment);
+require_once( IIRS__COMMON_DIR . 'utility.php');
+require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php');
+require_once( IIRS__COMMON_DIR . 'environment.php');
+IIRS_0_debug_print( $debug_environment );
 
 $listTIs = '';
 ?>
@@ -17,10 +17,9 @@ $listTIs = '';
   <style>
   </style>
 
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translation('search the transition towns of the world'); ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('search the transition towns of the world'); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
   <ul id="list">
-    <?php print($listTIs); ?>
   </ul>
 </div>

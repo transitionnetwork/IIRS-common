@@ -1,5 +1,5 @@
 <?php
-/* code from the Akismet site:
+/* code adapted from the Akismet site:
  * http://akismet.com/development/api/#comment-check
  *
  * we could have linked in to the Wordpress Akismet plugin if it is installed
@@ -7,25 +7,26 @@
  * we oculd also have used a PHP class from Akismet but want to keep it short and sweet so let's try this function first
  * also official and from Akismet :)
  *
- * returns false if it doesn't like it
+ * returns "true" if it is SPAM
+ * returns "false" if it is HAM
  */
-require_once( 'environment.php' );
+require_once( IIRS__COMMON_DIR . 'environment.php' );
 
-function akismet_check_ti_registration_name( $name ) {
-  return akismet_check( $name, 'ti_registration_name' );
+function IIRS_0_akismet_check_ti_registration_name( $user_array, $name ) {
+  return IIRS_0_akismet_check( $user_array, $name, 'ti_registration_name' );
 }
 
-function akismet_check_ti_registration_summary( $summary ) {
-  return akismet_check( $summary, 'ti_registration_summary' );
+function IIRS_0_akismet_check_ti_registration_summary( $user_array, $summary ) {
+  return IIRS_0_akismet_check( $user_array, $summary, 'ti_registration_summary' );
 }
 
-function akismet_check( $text, $type = 'comment' ) {
-  global $IIRS_domain_stem, $IIRS_user_ip, $akismet_API_key, $IIRS_user_agent, $IIRS_HTTP_referer;
-  $ret = false;
-  $user_array = IIRS_0_details_user();
+function IIRS_0_akismet_check( $user_array, $text, $type = 'comment' ) {
+  // Passes back TRUE (its spam) or FALSE (its ham)
+  // or an IIRS_Error if a system level issue occurs
+  global $IIRS_domain_stem, $IIRS_user_ip, $IIRS_user_agent, $IIRS_HTTP_referer;
 
-  // Call to comment check
-  $data = array('blog'               => $IIRS_domain_stem,
+  $author_data = array(
+                'blog'               => $IIRS_domain_stem,
                 'user_ip'            => $IIRS_user_ip,
                 'user_agent'         => $IIRS_user_agent,
                 'referrer'           => $IIRS_HTTP_referer,
@@ -33,62 +34,37 @@ function akismet_check( $text, $type = 'comment' ) {
                 'comment_type'       => $type,
                 'comment_author'     => $user_array['name'],
                 'comment_author_email' => $user_array['email'],
-                'comment_author_url' => null,
-                'comment_content'    => $text);
+                // 'comment_author_url' => null,
+                'comment_content'    => $text
+  );
 
-  print( "akismet spam check:\n" );
-  var_dump( $data );
-  $ret = akismet_comment_check( $akismet_API_key, $data );
-  print("$ret\n");
-
-  return $ret;
+  return IIRS_0_akismet_comment_check( $author_data );
 }
 
-// Passes back true (it's spam) or false (it's ham)
-function akismet_comment_check( $key, $data ) {
-  $ret = false;
-  $request = 'blog='. urlencode($data['blog']) .
-              '&user_ip='. urlencode($data['user_ip']) .
-              '&user_agent='. urlencode($data['user_agent']) .
-              '&referrer='. urlencode($data['referrer']) .
-              '&permalink='. urlencode($data['permalink']) .
-              '&comment_type='. urlencode($data['comment_type']) .
-              '&comment_author='. urlencode($data['comment_author']) .
-              '&comment_author_email='. urlencode($data['comment_author_email']) .
-              // '&comment_author_url='. urlencode($data['comment_author_url']) .
-              '&comment_content='. urlencode($data['comment_content']);
-  $host = $http_host = $key.'.rest.akismet.com';
-  $path = '/1.1/comment-check';
-  $port = 80;
-  $akismet_ua = "WordPress/3.8.1 | Akismet/2.5.9";
-  $content_length = strlen( $request );
-  $http_request  = "POST $path HTTP/1.0\r\n";
-  $http_request .= "Host: $host\r\n";
-  $http_request .= "Content-Type: application/x-www-form-urlencoded\r\n";
-  $http_request .= "Content-Length: {$content_length}\r\n";
-  $http_request .= "User-Agent: {$akismet_ua}\r\n";
-  $http_request .= "\r\n";
-  $http_request .= $request;
-  $http_response = '';
-  $response_body = 'false';
+function IIRS_0_akismet_comment_check( $author_data ) {
+  // Passes back TRUE (its spam) or FALSE (its ham)
+  // or an IIRS_Error if a system level issue occurs
+  $ret           = FALSE; // not SPAM
+  $url           = 'http://' . IIRS_AKISMET_API_KEY . '.rest.akismet.com/1.1/comment-check';
+  $akismet_ua    = 'WordPress/3.8.1 | Akismet/2.5.9';
+  $response_body = null;
 
-  // TODO: use the IIRS_0_HTTP_request instead
-  $fs = @fsockopen( $http_host, $port, $errno, $errstr, 10 );
-  if( $fs == false ) {
-    print( "Akismet cannot open socket\n" );
-    // if Akismet is down or un-contactable then ok everything
-    $ret = true;
+  IIRS_0_debug_print( "akismet spam check:" );
+  IIRS_0_debug_var_dump( $author_data );
+  $response_body = IIRS_0_http_request( $url, $author_data, null, $akismet_ua );
+  if ( IIRS_is_error( $response_body ) ) {
+    // the low level HTTP request got an error, so return it
+    $ret = $response_body;
+  } elseif ( '' == $response_body ) {
+    $ret = new IIRS_Error( IIRS_AKISMET_NOTHING, 'Failed to check the entries against the Akismet SPAM database', 'Akismet returned an invalid response (empty string)', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+  } elseif ( is_null($response_body) ) {
+    $ret = new IIRS_Error( IIRS_AKISMET_FAILED,  'Failed to check the entries against the Akismet SPAM database', 'Akismet returned a big fat nothing', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
   } else {
-    fwrite( $fs, $http_request );
-    while ( !feof( $fs ) )
-        $http_response .= fgets( $fs, 1160 ); // One TCP-IP packet
-    fclose( $fs );
-    print( "Akismet HTTP response:\n" );
-    var_dump( $http_response );
-    $response_array = explode( "\r\n\r\n", $http_response, 2 );
-    if ( count($response_array) == 2 ) $ret = ( 'true' == $response_array[1] );
+    IIRS_0_debug_print( "Akismet HTTP response:" );
+    IIRS_0_debug_var_dump( $response_body );
+    $ret = ( 'true' == $response_body );
+    IIRS_0_debug_print( $ret ? 'is SPAM' : 'not spam');
   }
-
 
   return $ret;
 }

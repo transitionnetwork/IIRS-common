@@ -8,6 +8,10 @@
 }
 
 /* ------------------------ specific classes */
+body .IIRS_0_disabled {
+  color:#999999;
+  /* text-decoration:none; */
+}
 #IIRS_0_language_control {
   font-size:11px;
   float:right;
@@ -21,8 +25,27 @@
   float:right;
   padding:1px;
 }
+.IIRS_0_bare_list {
+  list-style:none;
+  margin-left:0px;
+}
+.IIRS_0_HTML_data {
+  display:none;
+}
+.IIRS_0_map {
+  width:100%;
+  height:300px;
+}
 
-/* ---------------------------------------------------------------- IIRS base list selection CSS: override by host */
+.IIRS_0_status {
+  color:#666666;
+  font-size:14px;
+  font-weight:normal;
+  line-height:15px;
+}
+
+
+/* ------------------------------------ IIRS base list selection CSS: override by host */
 #IIRS_0_list_selector {
   border-top:1px solid #d7d7d7;
   font-size:18px;
@@ -79,45 +102,46 @@ body #IIRS_0_list_selector .IIRS_0_button {
 
 
 /* ------------------------ when IIRS has to show it's own messages */
-.IIRS_0_bare_list {
-  list-style:none;
-  margin-left:0px;
-}
-.IIRS_0_HTML_data {
-  display:none;
-}
-.IIRS_0_map {
-  width:100%;
-  height:300px;
-}
-.IIRS_0_status {
-  color:#666666;
-  font-size:14px;
-  font-weight:normal;
-  line-height:15px;
-}
 .IIRS_0_message {
   position:relative;
-  padding-left:42px;
-  background-color:#faffab;
+  width:100%;
   border:1px solid #d7d7d7;
+  padding:10px 10px 10px 40px;
+  /* margin:10px; */ /* we are on width 100% so we do not want to shift right */
+  background-position:6px center;
+  background-repeat:no-repeat;
+
+  background-color:#faffab;
+  /* font-size:12px; */ /* do not dictate the font-sizes! */
+  color:#333333;
 }
 .IIRS_0_message img {
   position:absolute;
   top:2px;
   left:4px;
 }
-.IIRS_0_warning { /* used by the no javascript message only */
-  background-color:yellow;
+/* TODO: these background image URLs assume the image URL stem to be /IIRS/images... */
+.IIRS_0_message_level_information {
+  background-image:url(/IIRS/images/information);
+  background-color:#FFFACD;
   border:1px solid #555555;
   color:#555555;
-  padding:3px;
-  font-size:11px;
-  margin:10px;
 }
-body .IIRS_0_disabled {
-  color:#999999;
-  /* text-decoration:none; */
+.IIRS_0_message_level_warning {
+  background-image:url(/IIRS/images/warning);
+  background-color:#FFFACD;
+  border:1px solid #555555;
+  color:#aa3333;
+}
+.IIRS_0_message_level_error {
+  background-image:url(/IIRS/images/error);
+  background-color:#ff0000;
+  border:1px solid #555555;
+  color:#ffffff;
+  font-weight:bold;
+}
+.IIRS_message_detail {
+  display:none;
 }
 #IIRS_0 .IIRS_0_error_back {
   font-weight:bold;
@@ -126,6 +150,14 @@ body .IIRS_0_disabled {
 .IIRS_0_back {
   /* remove for now: need a stack to progressively move down... */
   display:none;
+}
+.IIRS_0_user_action {
+  border:1px solid #333333;
+  background-color:#d7d7d7;
+  color:#000000;
+  padding:2px 8px;
+  font-weight:normal;
+  float:right;
 }
 
 /* ------------------------ IIRS layout utility classes */

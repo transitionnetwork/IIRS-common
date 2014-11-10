@@ -2,23 +2,25 @@
 debug output:
 <?php
 global $debug_environment;
-require_once( 'framework_abstraction_layer.php' );
-require_once( 'utility.php' );
-require_once( 'environment.php' );
-require_once( 'registration/inputs.php' );
-require_once( 'location.php' );
-print( $debug_environment );
+require_once( IIRS__COMMON_DIR . 'utility.php' );
+require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
+require_once( IIRS__COMMON_DIR . 'environment.php' );
+require_once( IIRS__COMMON_DIR . 'registration/inputs.php' );
+require_once( IIRS__COMMON_DIR . 'location.php' );
+IIRS_0_debug_print( $debug_environment );
 
 // ------------------------------------------------------------- inputs
 // $form = standard in inputs.php: the name of the form sent through
 // in this case: login, update account details, update transition initiative
+$IIRS_error = NULL;
 $towns_searched_for = ! empty( $town_name );
 
 // ------------------------------------------------------------- IIRS authentication
 // from login form below
 if ( $form == 'login' ) {
-  print( "logging in [$name]..." );
-  IIRS_0_login( $name, $pass );
+  IIRS_0_debug_print( "logging in [$name]..." );
+  $ret = IIRS_0_login( $name, $pass );
+  if ( IIRS_is_error( $ret ) ) $IIRS_error = $ret;
 }
 
 // ------------------------------------------------------------- updates
@@ -26,20 +28,20 @@ $TI = NULL;
 
 if ( 'update account details' == $form ) {
   // current user logged in is required here
-  print( "updating account details...\n" );
+  IIRS_0_debug_print( "updating account details..." );
   $values = array(
     'name'     => $name,
     'email'    => $email,
     'password' => ( $pass == IIRS_0_CLEAR_PASSWORD ? NULL : $pass ),
   );
-  // TODO: if IIRS_0_TI_update_user fails? e.g. email => existing email
-  IIRS_0_TI_update_user( $values );
+  $ret = IIRS_0_TI_update_user( $values );
+  if ( IIRS_is_error( $ret ) ) $IIRS_error = $ret;
 }
 
 if ( 'update transition initiative' == $form ) {
   // current user logged in is required here
   // to get the correct TI
-  print( "updating TI details...\n" );
+  IIRS_0_debug_print( "updating TI details..." );
   $values = array(
     'name'                  => $initiative_name,
     'summary'               => $summary,
@@ -53,7 +55,8 @@ if ( 'update transition initiative' == $form ) {
     'location_granuality'   => $location_granuality,
     'location_bounds'       => $location_bounds,
   );
-  IIRS_0_TI_update_TI( $values );
+  $ret = IIRS_0_TI_update_TI( $values );
+  if ( IIRS_is_error( $ret ) ) $IIRS_error = $ret;
 }
 
 // ------------------------------------------------------------- load current values
@@ -62,14 +65,15 @@ if ( 'update transition initiative' == $form ) {
 $is_user_with_one_TI = false;
 $location_uniques    = array();
 if ( IIRS_0_logged_in() ) {
-  print( "loading user details...\n" );
+  IIRS_0_debug_print( "loading user details..." );
   if ( $user = IIRS_0_details_user() ) {
     $name  = $user['name'];
     $email = $user['email'];
     $phone = ( isset( $user['phone'] ) ? $user['phone'] : null );
 
-    print( "loading TI [" . IIRS_0_CONTENT_TYPE . "] details...\n" );
-    if ( $TI = IIRS_0_details_TI_user() ) {
+    IIRS_0_debug_print( "loading TI [" . IIRS_0_CONTENT_TYPE . "] details..." );
+    $TI = IIRS_0_details_TI_user();
+    if ( is_array( $TI ) ) {
       $is_user_with_one_TI = true;
 
       $initiative_name      = $TI['name'];
@@ -87,10 +91,11 @@ if ( IIRS_0_logged_in() ) {
 
       $location_options = IIRS_0_location_to_HTML( $location_array, $location_uniques, true ); // true = selected
     } else {
-      print( "could not load associated TI. invalid user for this screen. show login screen.\n" );
+      $IIRS_error = new IIRS_Error( IIRS_USER_NO_ASSOCIATED_TI, 'There is no Initiative associated with this user', 'TI not linked to this user',  IIRS_MESSAGE_USER_ERROR );
+      IIRS_0_debug_print( $IIRS_error );
     }
   } else {
-    print( "could not load user: show login screen\n" );
+    IIRS_0_debug_print( "could not load user: show login screen" );
   }
 }
 
@@ -99,7 +104,7 @@ if ( $towns_searched_for ) {
   // append to the original option
   // still select the first option in this new list though
   // which will effectively anull the first selection above
-  $location_options     .= IIRS_0_location_search_options( $town_name, $location_uniques );
+  $location_options  .= IIRS_0_location_search_options( $town_name, $location_uniques );
   $towns_found        = ! empty( $location_options );
 }
 
@@ -108,78 +113,81 @@ if ( $towns_searched_for ) {
 </pre></div>
 
 <div id="IIRS_0">
-  <style>
-  </style>
-
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translation( 'setup editor' ); ?>
+  <?php
+  if ( $IIRS_error ) {
+      // IIRS_0_set_translated_error_message( ... ) uses IIRS_0_set_message( ... )
+      IIRS_0_set_translated_error_message( $IIRS_error );
+  } else {
+  ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( 'setup editor' ); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
 
   <?php if ( $is_user_with_one_TI ) { ?>
     <form action="index" class="IIRS_0_clear IIRS_0_formPopupNavigate" method="POST">
-      <h2><?php IIRS_0_print_translation( 'your details' ); ?>:</h2>
+      <h2><?php IIRS_0_print_translated_HTML_text( 'your details' ); ?>:</h2>
       <div id="IIRS_0_name" class="IIRS_0_formfield">
-        <label id="IIRS_0_name_label">name:</label>
-        <input id="IIRS_0_name_input" type="text" name="name" value="<?php print( $name ); ?>" />
+        <label id="IIRS_0_name_label" class="IIRS_0_disabled">name:</label>
+        <input id="IIRS_0_name_input" class="IIRS_0_disabled" disabled="1" type="text" name="name" value="<?php IIRS_0_print_HTML_form_value( $name ); ?>" />
       </div>
       <div id="IIRS_0_email" class="IIRS_0_formfield">
         <label id="IIRS_0_email_label">email:</label>
-        <input id="IIRS_0_email_input" type="text" name="email" value="<?php print( $email ); ?>" />
+        <input id="IIRS_0_email_input" type="text" name="email" value="<?php IIRS_0_print_HTML_form_value( $email ); ?>" />
       </div>
       <div id="IIRS_0_password" class="IIRS_0_formfield">
         <label id="IIRS_0_password_label">password:</label>
-        <input id="IIRS_0_password_input" type="password" name="pass" value="<?php print( IIRS_0_CLEAR_PASSWORD ); ?>" />
+        <input id="IIRS_0_password_input" type="password" name="pass" value="<?php IIRS_0_print_HTML_form_value( IIRS_0_CLEAR_PASSWORD ); ?>" />
       </div>
       <input type="hidden" name="form" value="update account details" />
-      <input type="submit" name="submit" class="IIRS_0_bigbutton IIRS_0_clear" value="<?php IIRS_0_print_translation( 'update account details' ); ?>" />
+      <input type="submit" name="submit" class="IIRS_0_bigbutton IIRS_0_clear" value="<?php IIRS_0_print_translated_HTML_text( 'update account details' ); ?>" />
     </form>
 
     <form action="index" class="IIRS_0_clear IIRS_0_formPopupNavigate" method="POST">
-      <h2><?php IIRS_0_print_translation( 'transition initiative details' ); ?>:</h2>
+      <h2><?php IIRS_0_print_translated_HTML_text( 'transition initiative details' ); ?>:</h2>
       <div id="IIRS_0_initiative_name" class="IIRS_0_formfield">
         <label id="IIRS_0_initiative_name_label">initiative name:</label>
-        <input id="IIRS_0_initiative_name_input" type="text" name="initiative_name" value="<?php print( $initiative_name ); ?>" />
+        <input id="IIRS_0_initiative_name_input" type="text" name="initiative_name" value="<?php IIRS_0_print_HTML_form_value( $initiative_name ); ?>" />
       </div>
       <div id="IIRS_0_domain" class="IIRS_0_formfield">
         <label id="IIRS_0_domain_label">domain:</label>
-        <input id="IIRS_0_domain_input" type="text" name="domain" value="<?php print( $domain ); ?>" />
+        <input id="IIRS_0_domain_input" type="text" name="domain" value="<?php IIRS_0_print_HTML_form_value( $domain ); ?>" />
       </div>
 
       <ul id="IIRS_0_list_selector">
         <?php if ( $towns_searched_for && ! $towns_found ) { ?>
-          <li class="IIRS_0_place IIRS_0_message">
-            <img src="<?php print( "$IIRS_URL_image_stem/information" ); ?>" />
-            <?php print( IIRS_0_translation( 'no towns found matching' ) . " $town_name " . '<br/>' . IIRS_0_translation( 'you will need to' ) . ' <a href="mailto:annesley_newholm@yahoo.it">' . IIRS_0_translation( 'register by email' ) . '</a> ' . IIRS_0_translation( 'because we cannot find your town on our maps system!' )); ?>
+          <li class="IIRS_0_place IIRS_0_message IIRS_0_message_level_information">
+            <img src="<?php IIRS_0_print_HTML_image_src( "$IIRS_URL_image_stem/information" ); ?>" />
+            <?php IIRS_0_print_HTML_text( IIRS_0_translation( 'no towns found matching' ) . " $town_name " . '<br/>' . IIRS_0_translation( 'you will need to email' ) . ' ' . IIRS_EMAIL_TEAM_LINK . ' ' . IIRS_0_translation( 'to register by email because we cannot find your town on our maps system!' )); ?>
           </li>
         <?php } ?>
-        <?php print( $location_options ); ?>
+        <?php IIRS_0_print_HTML( $location_options ); ?>
         <li id="IIRS_0_other" class="IIRS_0_place">
-          <?php IIRS_0_print_translation( 'change location' ); ?>:
-          <input id="IIRS_0_research_townname_new" value="<?php if ( $town_name ) print( $town_name ); ?>" />
-          <input id="IIRS_0_research" type="button" value="<?php IIRS_0_print_translation( 'search' ); ?>" />
+          <?php IIRS_0_print_translated_HTML_text( 'change location' ); ?>:
+          <input id="IIRS_0_research_town_name_new" value="<?php IIRS_0_print_HTML_form_value( $town_name ); ?>" />
+          <input id="IIRS_0_research" type="button" value="<?php IIRS_0_print_translated_HTML_text( 'search' ); ?>" />
         </li>
       </ul>
 
       <div id="IIRS_0_summary" class="IIRS_0_formfield">
         <label id="IIRS_0_summary_label">summary:</label>
-        <?php IIRS_0_HTML_editor($summary, 'iirseditor'); ?>
-        <textarea id="iirseditor" class="IIRS_0_textarea" name="summary"><?php print( $summary ); ?></textarea>
+        <?php IIRS_0_HTML_editor($summary, 'summary'); ?>
       </div>
 
       <input type="hidden" name="form" value="update transition initiative" />
-      <input type="submit" class="IIRS_0_bigbutton IIRS_0_clear" name="submit" value="<?php IIRS_0_print_translation( 'update transition initiative' ); ?>" />
+      <input type="submit" class="IIRS_0_bigbutton IIRS_0_clear" name="submit" value="<?php IIRS_0_print_translated_HTML_text( 'update transition initiative' ); ?>" />
     </form>
-<?php } else {
+  <?php } else {
 
-// ------------------------------------------------------------- login
-?>
+  // ------------------------------------------------------------- login
+  ?>
 
-    <form action="index" class="IIRS_0_clear IIRS_0_formPopupNavigate" method="POST">
-      <h2><?php IIRS_0_print_translation( 'login required to edit' ); ?>:</h2>
-      <input type="text" name="name" value="<?php print( $name ); ?>" />
-      <input type="password" name="pass" />
-      <input type="hidden" name="form" value="login" />
-      <input name="submit" type="submit" class="IIRS_0_bigbutton IIRS_0_clear" value="login" />
-    </form>
+      <form action="index" class="IIRS_0_clear IIRS_0_formPopupNavigate" method="POST">
+        <h2><?php IIRS_0_print_translated_HTML_text( 'login required to edit' ); ?>:</h2>
+        <input type="text" name="name" value="<?php IIRS_0_print_HTML_form_value( $name ); ?>" />
+        <input type="password" name="pass" />
+        <input type="hidden" name="form" value="login" />
+        <input name="submit" type="submit" class="IIRS_0_bigbutton IIRS_0_clear" value="login" />
+      </form>
+    <?php } ?>
   <?php } ?>
 </div>

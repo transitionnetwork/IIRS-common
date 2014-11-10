@@ -32,7 +32,7 @@ function IIRS_0_formPopupNavigate(e, sContentArea, sFileName) {
   }
 }
 
-function attachPopupNavigationEvents(e) {
+function IIRS_0_attachPopupNavigationEvents(e) {
   jPopup = jQuery("#IIRS_0_popup");
 
   jQuery("#IIRS_0_popup_close").click(function(e){
@@ -57,4 +57,4 @@ function attachPopupNavigationEvents(e) {
   });
 }
 
-jQuery(document).bind("IIRS_0_newContent", attachPopupNavigationEvents); //all new content
+jQuery(document).bind("IIRS_0_newContent", IIRS_0_attachPopupNavigationEvents); //all new content

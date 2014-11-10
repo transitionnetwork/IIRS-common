@@ -1,8 +1,8 @@
 /*
 <?php
-require_once('framework_abstraction_layer.php');
-require_once('utility.php');
-require_once('environment.php');
+require_once( IIRS__COMMON_DIR . 'utility.php' );
+require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
+require_once( IIRS__COMMON_DIR . 'environment.php' );
 ?>
 */
 

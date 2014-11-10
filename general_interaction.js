@@ -17,6 +17,8 @@ function IIRS_0_initialiseMaps() {
   }
 }
 
+var oCurrentInfoWindow;
+
 function IIRS_0_showMaps() {
   jQuery(".IIRS_0_map:not(.initialised)").each(function(){
     var jThis         = jQuery(this);
@@ -49,9 +51,16 @@ function IIRS_0_showMaps() {
         content: '<div id=\"content\"><b><a href="/IIRS/view?ID=' + (jTI.children(".native_ID").text()) + '">' + sName + '</a></b></p></div>'
       });
       google.maps.event.addListener(oMarker, "click", function() {
+        if (oCurrentInfoWindow) oCurrentInfoWindow.close();
+        oCurrentInfoWindow = oInfoWindow;
         oInfoWindow.open(oMap, oMarker);
       });
       console.log("adding TI [" + sName + "]")
+    });
+
+    google.maps.event.addListener(oMap, "click", function() {
+      if (oCurrentInfoWindow) oCurrentInfoWindow.close();
+      oCurrentInfoWindow = null;
     });
 
     jThis.addClass("initialised");
@@ -59,14 +68,30 @@ function IIRS_0_showMaps() {
 }
 
 function IIRS_0_formCheckRequired(e) {
+  // returns true or false
+  // TODO: needs to return a validation failure string
   var bValidForm = true;
+  var sValidationFailures = '';
   var jForm = jQuery(this);
 
   jForm.find(".IIRS_0_required").each(function(){
     var jRequiredFormElement = jQuery(this);
-    if (!jRequiredFormElement.val() || jRequiredFormElement.hasClass("IIRS_0_hint")) {
+    var sName = jRequiredFormElement.attr("name");
+    var sType = jRequiredFormElement.attr("type");
+    var sValue;
+
+    switch (sType) {
+      case "radio": {
+        sValue = jQuery("input:radio[name=" + sName + "]:checked").val();
+        break;
+      }
+      default: {sValue = jRequiredFormElement.val();}
+    }
+
+    if (!sValue || jRequiredFormElement.hasClass("IIRS_0_hint")) {
       jRequiredFormElement.addClass("IIRS_0_validation_fail");
       bValidForm = false;
+      sValidationFailures += sName + " is required"; // TODO: needs translating
     } else {
       jRequiredFormElement.removeClass("IIRS_0_validation_fail");
     }
@@ -133,7 +158,9 @@ function IIRS_0_postAsForm(sHREF, oParameters) {
   var oParam;
   for (var i in oParameters) {
     oParam = oParameters[i];
-    sForm += "<input type='hidden' name='" + oParam.name + "' value='" + oParam.value + "'></input>";
+    sName  = oParam.value.replace(/'/, "&apos;");
+    sValue = oParam.value.replace(/'/, "&apos;");
+    sForm += "<input type='hidden' name='" + oParam.name + "' value='" + sValue + "'></input>";
   }
   sForm += "</form>";
   jQuery(sForm).submit();

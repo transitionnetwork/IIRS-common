@@ -1,14 +1,24 @@
 <?php
-//--------------------------------------------------- optional functions
-if (!function_exists('IIRS_0_translation')) {
-  function IIRS_0_translation($string_to_translate) {
-    return $string_to_translate;
-  }
-}
+global $IIRS_0_force_complete_framework;
+$IIRS_0_force_complete_framework = true;
 
-if (!function_exists('IIRS_0_input')) {
-  function IIRS_0_input($sKey) {
-    return (isset($_POST[$sKey]) ? $_POST[$sKey] : (isset($_GET[$sKey]) ? $_GET[$sKey] : NULL));
+//--------------------------------------------------- inputs and environment
+if ( ! function_exists( 'IIRS_0_input' ) ) {
+  function IIRS_0_input( $key, $raw = FALSE ) {
+    // use IIRS_RAW_USER_INPUT constant to indicate TRUE for $raw
+    // this function needs to return the escaped value, unless asked otherwise
+    // PHP may have already escaped it with get_magic_quotes_gpc
+    // the framework may have re-written the super-globals $_POST
+    //   e.g. Wordpress load.php does this
+    // IIRS_0_input(town_name) = o\'brien
+    // IIRS_0_input(town_name, true) = o'brien
+    $already_added_slashes = get_magic_quotes_gpc();
+    $value                 = ( isset( $_POST[$key] ) ? $_POST[$key] : ( isset($_GET[$key] ) ? $_GET[$key] : NULL ) );
+    $final_value           = NULL;
+    if     ( $already_added_slashes && $raw )     $final_value = stripslashes( $value );
+    elseif ( ! $already_added_slashes && ! $raw ) $final_value = addslashes( $value );
+    else                                          $final_value = $value;
+    return $final_value;
   }
 }
 
@@ -26,46 +36,40 @@ if (!function_exists('IIRS_0_setting')) {
       case 'override_TI_content_template': return true;
       case 'language_selector': return false;
       case 'thankyou_for_registering_url': return null;
+      case 'region_bias': return null;
       default: return false;
     }
-  }
-}
-
-if (!function_exists('IIRS_0_TI_is_registered')) {
-  function IIRS_0_TI_is_registered($town_name, $location_latitude, $location_longitude, $location_description) {
-    //$town_name = the townname typed in that generated this search
-    //$geokml, $location_description = potential matches to test for against the database
-    $registered  = false;
-    $TIs_nearby   = IIRS_0_TIs_nearby($location_latitude, $location_longitude, $location_description);
-
-    $town_nameBase = IIRS_0_remove_transition_words($town_name);
-
-    //look at the data and decide...
-    /*
-    foreach ($TIs_nearby as $town_name => $aDetails) {
-      //direct parameter comparison
-      if (isset($aDetails['name'])) {
-        if (strcasecmp($aDetails['name'], $town_nameBase)) $registered = true;
-      }
-      if (isset($aDetails['location_description'])) {
-        if (strcasecmp($aDetails['location_description'], $location_description)) $registered = true;
-      }
-
-      //try to asses how close / similar the areas are
-      if (isset($aDetails['geokml'])) {
-        $geokml = $aDetails['geokml'];
-        //TODO: area comparison
-      }
-    }
-    */
-
-    return $registered;
   }
 }
 
 if (!function_exists('IIRS_0_current_path')) {
   function IIRS_0_current_path() {
     return $_SERVER['PHP_SELF'];
+  }
+}
+
+if (!function_exists('IIRS_0_available_languages')) {
+  function IIRS_0_available_languages() {
+    return array('en');
+  }
+}
+
+if (!function_exists('IIRS_0_locale')) {
+  function IIRS_0_locale() {
+    return 'en_EN';
+  }
+}
+
+
+// ------------------------------------------------------- messaging
+if (!function_exists('IIRS_0_set_message')) {
+  function IIRS_0_set_message($mess_no, $message, $message_detail = null, $level = IIRS_MESSAGE_USER_INFORMATION, $_user_action = null, $_args = null) {
+    // global $IIRS_widget_mode requires that the message is included in the HTML output
+    // because the user is viewing the message through HTML transported in the widget on a *different* website
+    // normal message display, that is through a plugin / module on *this* website can use the host framework function
+    // e.g. Drupal uses drupal_set_message() which *indirectly* queues the message for display (once)
+    $class = IIRS_0_message_class( $level );
+    IIRS_0_print_HTML( "<div class=\"IIRS_0_message IIRS_0_message_$mess_no IIRS_0_message_level_$class\">" . IIRS_0_escape_for_HTML_text( $message ) . '</div>' );
   }
 }
 
@@ -77,21 +81,43 @@ if (!function_exists('IIRS_0_redirect')) {
   }
 }
 
-if (!function_exists('IIRS_0_http_request')) {
-  function IIRS_0_http_request($url) {
-    return file_get_contents($url, 'r');
+if (!function_exists('IIRS_0_registration_email_html')) {
+  function IIRS_0_registration_email_html( $name, $password = null ) {
+    $body     = '<h1>' . IIRS_0_translation( 'welcome to Transition' ) . '</h1>';
+    $body    .= '<p>'  . IIRS_0_translation( 'here are your registration details' ) . '<br/>';
+    $body    .= '<b>'  . IIRS_0_translation( 'username' ) . '</b>: ' . $name;
+    if ( $password ) $body .=  ', <b>' . IIRS_0_translation( 'password' ) . '</b>: ' . $password;
+    $body    .= '</p>';
+    $body    .= '<p>'  . IIRS_0_translation( 'reply to this email with any thoughts / excitement / ideas / congratulations / bugs / other things :)' ) . '</p>';
+    return $body;
   }
 }
 
-if (!function_exists('IIRS_0_set_message')) {
-  function IIRS_0_set_message($message, $IIRS_widget_mode = true) {
-    print("<div class=\"IIRS_0_message\">$message</div>");
+
+//--------------------------------------------------- common framework utilities
+if ( $IIRS_0_force_complete_framework ) {
+  //misc
+  IIRS_0_function_required( 'IIRS_0_send_email' );
+  IIRS_0_function_required( 'IIRS_0_http_request' );
+  IIRS_0_function_required( 'IIRS_0_HTML_editor' );
+  IIRS_0_function_required( 'IIRS_0_translation' );
+  IIRS_0_function_required( 'IIRS_0_framework_name' );
+}
+
+if (!function_exists('IIRS_0_error_log')) {
+  function IIRS_0_error_log( $error_string ) {
+    error_log( $error_string );
   }
 }
 
+if (!function_exists('IIRS_0_debug')) {
+  function IIRS_0_debug() {return TRUE;}
+}
+
+//--------------------------------------------------- TIs and Users
 if (!function_exists('IIRS_0_details_TI_page')) {
   function IIRS_0_details_TI_page() {
-    IIRS_0_set_message('IIRS_0_details_TI_page() not supported');
+    IIRS_0_set_not_supported_message( 'IIRS_0_details_TI_page' );
     return NULL;
   }
 }
@@ -101,88 +127,49 @@ if (!function_exists('IIRS_0_TIs_all')) {
     //TODO: use the IIRS_0_TIs_nearby() with unlimited results
     //setting sensible limit of 5000 for performance purposes
     //TODO: admin warning when limit is at 4000
-    $TIs = IIRS_0_TIs_nearby(0, 0, '', 5000);
+    $TIs = IIRS_0_TIs_nearby(0, 0, '', 5000); // required function
     return $TIs;
-  }
-}
-
-if (!function_exists('IIRS_0_available_languages')) {
-  function IIRS_0_available_languages() {
-    return array('en');
   }
 }
 
 if (!function_exists('IIRS_0_URL_view_TI')) {
   function IIRS_0_URL_view_TI() {
-    IIRS_0_set_message('IIRS_0_URL_view_TI() not supported');
+    IIRS_0_set_not_supported_message( 'IIRS_0_URL_view_TI' );
     return NULL;
   }
 }
 
 if (!function_exists('IIRS_0_URL_edit_TI')) {
   function IIRS_0_URL_edit_TI() {
-    IIRS_0_set_message('IIRS_0_URL_edit_TI() not supported');
+    IIRS_0_set_not_supported_message( 'IIRS_0_URL_edit_TI' );
     return NULL;
   }
 }
 
-if (!function_exists('IIRS_0_HTML_editor')) {
-  function IIRS_0_HTML_editor($content, $HTML_ID) {
-    IIRS_0_set_message('IIRS_0_HTML_editor() not supported');
-    return NULL;
+if (!function_exists('IIRS_0_generate_password')) {
+  function IIRS_0_generate_password( $name = NULL ) {
+    return substr( str_shuffle( 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' ), 0, 8 );
   }
 }
 
-if (!function_exists('IIRS_0_TI_verify_add_TI')) {
-  function IIRS_0_TI_verify_add_TI($user_ID, $IIRS_host_domain, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain) {
-    // on success returns the native TI ID
-    // on failure returns NULL
-    $ret = null;
-
-    // check data input
-    if (
-         is_numeric( $location_latitude )
-      && is_numeric( $location_longitude )
-      && akismet_check_ti_registration_name( $initiative_name )
-    ) {
-      // ask host framework to add the TI
-      $ret = IIRS_0_TI_add_TI( $user_ID, $IIRS_host_domain, $initiative_name, $town_name, $location_latitude, $location_longitude, $location_description, $location_country, $location_full_address, $location_granuality, $location_bounds, $domain );
-    }
-
-    return $ret;
-  }
-}
-
-if (!function_exists('IIRS_0_language_is_supported')) {
-  function IIRS_0_language_is_supported() {
-    return in_array( IIRS_0_locale(), IIRS_0_languages() );
-  }
-}
-
-
-//--------------------------------------------------- required functions
-if (true) {
+if ( $IIRS_0_force_complete_framework ) {
   //querying
-  if (!function_exists('IIRS_0_TIs_nearby'))       {print('IIRS_0_TIs_nearby() required'); exit;}
-  if (!function_exists('IIRS_0_TIs_viewport'))     {print('IIRS_0_TIs_viewport() required'); exit;}
-  if (!function_exists('IIRS_0_details_user'))     {print('IIRS_0_details_user() required'); exit;}
-  if (!function_exists('IIRS_0_details_TI_user'))  {print('IIRS_0_details_TI_user() required'); exit;}
+  IIRS_0_function_required('IIRS_0_TIs_nearby');
+  IIRS_0_function_required('IIRS_0_TI_same_name');
+  // IIRS_0_function_required('IIRS_0_TIs_viewport');
+  IIRS_0_function_required('IIRS_0_details_user');
+  IIRS_0_function_required('IIRS_0_details_TI_user');
 
   //registering
-  if (!function_exists('IIRS_0_TI_add_user'))      {print('IIRS_0_TI_add_user() required'); exit;}
-  if (!function_exists('IIRS_0_delete_user'))      {print('IIRS_0_delete_user() required'); exit;}
-  if (!function_exists('IIRS_0_TI_add_TI'))        {print('IIRS_0_TI_add_TI() required'); exit;}
-  if (!function_exists('IIRS_0_TI_update_TI'))     {print('IIRS_0_TI_update_TI() required'); exit;}
-  if (!function_exists('IIRS_0_TI_update_user'))   {print('IIRS_0_TI_update_user() required'); exit;}
-  if (!function_exists('IIRS_0_next_initnumber'))  {print('IIRS_0_next_initnumber() required'); exit;}
+  IIRS_0_function_required('IIRS_0_TI_add_user');
+  IIRS_0_function_required('IIRS_0_delete_current_user');
+  IIRS_0_function_required('IIRS_0_TI_add_TI');
+  IIRS_0_function_required('IIRS_0_TI_update_TI');
+  IIRS_0_function_required('IIRS_0_TI_update_user');
+  IIRS_0_function_required('IIRS_0_next_initnumber');
 
   //authentication
-  if (!function_exists('IIRS_0_logged_in'))        {print('IIRS_0_logged_in() required'); exit;}
-  if (!function_exists('IIRS_0_login'))            {print('IIRS_0_login() required'); exit;}
-
-  //misc
-  if (!function_exists('IIRS_0_framework'))        {print('IIRS_0_framework() required'); exit;}
-  if (!function_exists('IIRS_0_locale'))           {print('IIRS_0_locale() required'); exit;}
-  if (!function_exists('IIRS_0_languages'))        {print('IIRS_0_languages() required'); exit;}
+  IIRS_0_function_required('IIRS_0_logged_in');
+  IIRS_0_function_required('IIRS_0_login');
 }
 ?>

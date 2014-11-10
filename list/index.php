@@ -11,13 +11,13 @@ debug output:
  */
 
 global $debug_environment;
-require_once('framework_abstraction_layer.php');
-require_once('utility.php');
-require_once('environment.php');
-print($debug_environment);
+require_once( IIRS__COMMON_DIR . 'utility.php' );
+require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
+require_once( IIRS__COMMON_DIR . 'environment.php' );
+IIRS_0_debug_print( $debug_environment );
 
 $all_TIs = IIRS_0_TIs_all();
-usort($all_TIs, 'sort_date_desc');
+usort($all_TIs, 'IIRS_0_sort_date_desc');
 
 $usersTI = IIRS_0_details_TI_user();
 ?>
@@ -28,7 +28,7 @@ $usersTI = IIRS_0_details_TI_user();
     body .entry-meta {display:block;}
   </style>
 
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translation('list of transition towns around the world'); ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('list of transition towns around the world'); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
 
@@ -38,16 +38,17 @@ $usersTI = IIRS_0_details_TI_user();
         $date      = $TI['date'];
         $editable  = ($usersTI && $usersTI['native_ID'] == $TI['native_ID']);
         $edit_link = ($editable ? '<a class="IIRS_0_edit_link post-edit-link" href="/IIRS/edit">' . IIRS_0_translation('edit') . '</a>' : '');
+        $name_escaped = IIRS_0_escape_for_HTML_text( $TI['name'] );
         $html      = <<<"HTML"
         <li>
-          <h2 class="entry-title"><a href="/IIRS/view?ID=$TI[native_ID]">$TI[name]</a></h2>
+          <h2 class="entry-title"><a href="/IIRS/view?ID=$TI[native_ID]">$name_escaped</a></h2>
           <div class="entry-meta">
             <span class="edit-link">$edit_link</span>
           </div>
           <div class="IIRS_0_status">$date</div>
         </li>
 HTML;
-        print($html);
+        IIRS_0_print_HTML( $html );
       }
     ?>
   </ul>
