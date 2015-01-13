@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -11,7 +18,7 @@ IIRS_0_debug_print( $debug_environment );
 </pre></div>
 
 <div id="IIRS_0">
-  <div id="IIRS_0_no_javascript" class="IIRS_0_message_level_warning">
+  <div class="IIRS_0_no_javascript IIRS_0_message IIRS_0_message_level_warning">
     <?php IIRS_0_print_translated_HTML_text('oops, Javascript failed to run, services unavailable, please go to'); ?>
     &nbsp;<a href="http://transitionnetwork.org/">Transition Network</a>&nbsp;
     <?php IIRS_0_print_translated_HTML_text('to register instead'); ?>
@@ -26,5 +33,6 @@ IIRS_0_debug_print( $debug_environment );
     <input id="IIRS_0_town_name" class="IIRS_0_hint IIRS_0_required" name="town_name" value="<?php IIRS_0_print_translated_HTML_text('town or area'); ?>" />
     <input id="IIRS_0_submit" name="submit" type="submit" disabled="1" value="<?php IIRS_0_print_translated_HTML_text('check'); ?> &gt;&gt;" />
   </div></form>
+  <div class="IIRS_0_rules"><a target="_blank" href="<?php IIRS_0_print_translated_HTML_text('http://www.transitionnetwork.org/support/becoming-official#criteria'); ?>"><?php IIRS_0_print_translated_HTML_text('what is a Transition Town?'); ?></a></div>
   <div class="IIRS_0_reason"><?php IIRS_0_print_translated_HTML_text('connect with other Transition Towns, get visitors, have parties.'); ?></div>
 </div>

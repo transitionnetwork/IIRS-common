@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -12,7 +19,7 @@ $all_TIs = IIRS_0_TIs_all(); ?>;
 </pre></div>
 
 <div id="IIRS_0">
-  <div id="IIRS_0_no_javascript" class="IIRS_0_message_level_warning">
+  <div class="IIRS_0_no_javascript IIRS_0_message IIRS_0_message_level_warning">
     <?php IIRS_0_print_translated_HTML_text( 'oops, Javascript failed to run, services unavailable, please go to' ); ?>
     &nbsp;<a href="http://transitionnetwork.org/">Transition Network</a>&nbsp;
     <?php IIRS_0_print_translated_HTML_text( 'to register instead' ); ?>
@@ -22,7 +29,7 @@ $all_TIs = IIRS_0_TIs_all(); ?>;
   <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( 'mappings of transition towns around the world' ); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
-  <div class="IIRS_0_map">
+  <div class="IIRS_0_map IIRS_0_fit_bounds">
     map loading...
     <div class="IIRS_0_HTML_data location_latitude">0</div>
     <div class="IIRS_0_HTML_data location_longitude">0</div>

@@ -1,3 +1,8 @@
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+
 // this static JavaScript file is valid for all scenarios
 if (!window.jQuery) alert('jQuery required');
 
@@ -26,6 +31,7 @@ function IIRS_0_showMaps() {
     var fMapLongitude = jThis.children(".location_longitude").text();
     var sZoom         = jThis.children(".zoom").text();
     var jMarkers      = jThis.children(".markers").children();
+    var bFitBounds    = jThis.hasClass("IIRS_0_fit_bounds");
 
     // map
     var oMapOptions = {
@@ -34,6 +40,10 @@ function IIRS_0_showMaps() {
     };
     var oMap = new google.maps.Map(this, oMapOptions);
 
+    var oLatLngBounds = new google.maps.LatLngBounds();
+    // var oWholePlanet  = new google.maps.LatLngBounds(new google.maps.LatLng(85, -180), new google.maps.LatLng(-85, 180));
+    var oNE, oSW, iHeightDegrees, iWidthDegrees, iMaxDegrees;
+
     // markers
     jMarkers.each(function(){
       var jTI         = jQuery(this);
@@ -41,8 +51,9 @@ function IIRS_0_showMaps() {
       var fLongitude  = jTI.children(".location_longitude").text();
       var sName       = jTI.children(".name").text();
       var sImage      = g_sIIRSURLImageStem + "/" + (jTI.children(".status").text() == "official" ? "official" : "muller") + ".png";
+      var oLatLng     = new google.maps.LatLng(fLatitude, fLongitude);
       var oMarker     = new google.maps.Marker({
-        position: new google.maps.LatLng(fLatitude, fLongitude),
+        position: oLatLng,
         map:      oMap,
         title:    sName,
         icon:     sImage
@@ -55,13 +66,32 @@ function IIRS_0_showMaps() {
         oCurrentInfoWindow = oInfoWindow;
         oInfoWindow.open(oMap, oMarker);
       });
-      console.log("adding TI [" + sName + "]")
+      oLatLngBounds.extend(oLatLng);
+      if (window.console) console.log("adding TI [" + sName + "]")
     });
 
     google.maps.event.addListener(oMap, "click", function() {
       if (oCurrentInfoWindow) oCurrentInfoWindow.close();
       oCurrentInfoWindow = null;
     });
+
+    if (bFitBounds) {
+      if (window.console) console.log(oLatLngBounds);
+      oNE = oLatLngBounds.getNorthEast();
+      oSW = oLatLngBounds.getSouthWest();
+      iHeightDegrees = oNE.lat() - oSW.lat();
+      iWidthDegrees  = oNE.lng() - oSW.lng();
+      iMaxDegrees    = (iHeightDegrees > iWidthDegrees ? iHeightDegrees : iWidthDegrees);
+      if (iMaxDegrees > 8) {
+        // the initiatives being shown span more than 8 degrees of the planet surface
+        // so show the whole area
+        oMap.fitBounds(oLatLngBounds);
+      } else {
+        // initiatives are in a small area, so show the whole country
+        oMap.setCenter(oLatLngBounds.getCenter());
+        oMap.setZoom(5);
+      }
+    }
 
     jThis.addClass("initialised");
   });
@@ -154,20 +184,33 @@ function IIRS_0_setContent(sPlace, sHREF, oParameters, fCallback) {
 }
 
 function IIRS_0_postAsForm(sHREF, oParameters) {
-  var sForm = "<form method='POST' action='" + sHREF + "'>\n";
-  var oParam;
+  var oParam, oInput;
+  var oForm = document.createElement("form");
+  oForm.setAttribute("method", "POST");
+  oForm.setAttribute("action", sHREF);
+
   for (var i in oParameters) {
     oParam = oParameters[i];
-    sName  = oParam.value.replace(/'/, "&apos;");
-    sValue = oParam.value.replace(/'/, "&apos;");
-    sForm += "<input type='hidden' name='" + oParam.name + "' value='" + sValue + "'></input>";
+    sName  = oParam.name.replace(/"/, "&quot;");
+    sValue = oParam.value.replace(/"/, "&quot;");
+    oInput = document.createElement("input");
+    oInput.setAttribute("name",  sName);
+    oInput.setAttribute("value", sValue);
+    oForm.appendChild(oInput);
   }
-  sForm += "</form>";
-  jQuery(sForm).submit();
+
+  oInput = document.createElement("input");
+  oInput.setAttribute("type",  "submit");
+  oInput.setAttribute("name",  "submit");
+  oInput.setAttribute("value", "submit");
+  oForm.appendChild(oInput);
+  document.body.appendChild(oForm);
+
+  oInput.click();
 }
 
 function IIRS_0_newContentSetup(e) {
-  jQuery("#IIRS_0_no_javascript").hide();
+  jQuery(".IIRS_0_no_javascript").hide();
   jQuery("#IIRS_0_submit").removeAttr("disabled");
   jQuery("#IIRS_0 form").submit(IIRS_0_formCheckRequired);
   //this is overridden by the popup one if in widget mode

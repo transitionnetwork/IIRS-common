@@ -1,6 +1,14 @@
 <?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
+<?php
 /* code adapted from the Akismet site:
  * http://akismet.com/development/api/#comment-check
+ * use viagra-test-123 as the author to trigger a true response
  *
  * we could have linked in to the Wordpress Akismet plugin if it is installed
  * but we want this to work independent of framework.
@@ -56,9 +64,9 @@ function IIRS_0_akismet_comment_check( $author_data ) {
     // the low level HTTP request got an error, so return it
     $ret = $response_body;
   } elseif ( '' == $response_body ) {
-    $ret = new IIRS_Error( IIRS_AKISMET_NOTHING, 'Failed to check the entries against the Akismet SPAM database', 'Akismet returned an invalid response (empty string)', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+    $ret = new IIRS_Error( IIRS_AKISMET_NOTHING, 'Failed to check the entries against the Akismet SPAM database', 'Akismet returned an invalid response (empty string)', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $author_data );
   } elseif ( is_null($response_body) ) {
-    $ret = new IIRS_Error( IIRS_AKISMET_FAILED,  'Failed to check the entries against the Akismet SPAM database', 'Akismet returned a big fat nothing', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+    $ret = new IIRS_Error( IIRS_AKISMET_FAILED,  'Failed to check the entries against the Akismet SPAM database', 'Akismet returned a big fat nothing', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $author_data );
   } else {
     IIRS_0_debug_print( "Akismet HTTP response:" );
     IIRS_0_debug_var_dump( $response_body );

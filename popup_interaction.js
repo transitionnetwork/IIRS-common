@@ -1,3 +1,8 @@
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+
 /* static javascript only
 * separately called by loaders and changes
 * used by JavaScript widget popup based implementations of the IIRS only

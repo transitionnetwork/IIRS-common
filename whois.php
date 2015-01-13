@@ -1,4 +1,11 @@
 <?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
+<?php
 function IIRS_0_whois($domain) {
   $aAssocEntries = NULL;
 
@@ -18,12 +25,13 @@ function IIRS_0_whois($domain) {
     // Error?
     // array(1) { ["Error"] => string(54) " No appropriate Whois server found for abc.com domain!" }
     if ( count( $aAssocEntries ) == 1 && isset( $aAssocEntries['Error'] ) ) {
+      // IIRS_0_translation( 'Could not find extended information about your website' )
       $message        = 'Could not find extended information about your website';
       $message_detail = $aAssocEntries['Error'];
       if ( $message_detail == "No appropriate Whois server found for $domain domain!" ) {
-        $aAssocEntries = new IIRS_Error( IIRS_WHOIS_NO_DOMAIN_SERVER, $message, $message_detail, IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+        $aAssocEntries = new IIRS_Error( IIRS_WHOIS_NO_DOMAIN_SERVER, $message, $message_detail, IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, array( '$domain' => $domain ) );
       } else {
-        $aAssocEntries = new IIRS_Error( IIRS_WHOIS_ERROR, $message, $message_detail, IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR );
+        $aAssocEntries = new IIRS_Error( IIRS_WHOIS_ERROR, $message, $message_detail, IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, array( '$domain' => $domain ) );
       }
     }
   }

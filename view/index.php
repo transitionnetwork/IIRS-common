@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -18,7 +25,7 @@ if ( ! isset( $TI )        ) $TI        = IIRS_0_details_TI_user();
 if ( ! isset( $list_mode ) ) $list_mode = false;
 $full_mode = ! $list_mode;
 if ( ! $TI || ! is_array( $TI ) ) {
-  $IIRS_error = new IIRS_Error( IIRS_USER_NO_ASSOCIATED_TI, 'There is no Initiative associated with this user', 'TI not linked to this user',  IIRS_MESSAGE_USER_ERROR );
+  $IIRS_error = new IIRS_Error( IIRS_USER_NO_ASSOCIATED_TI, 'There is no Initiative associated with this user', 'TI not linked to this user',  IIRS_MESSAGE_USER_ERROR, IIRS_MESSAGE_NO_USER_ACTION );
   IIRS_0_debug_print( $IIRS_error );
 }
 
@@ -50,7 +57,9 @@ $maps_href = "https://www.google.com/maps/@$TI[location_latitude],$TI[location_l
       </a>
     <?php } ?>
 
-    <p class="IIRS_0_summary"><?php IIRS_0_print_HTML( $TI['summary'] ); ?></p>
+    <p class="IIRS_0_summary">
+      <?php IIRS_0_print_HTML( $TI['summary'] ); ?>
+    </p>
 
     <?php if ( $full_mode ) { ?>
       <div class="IIRS_0_map">

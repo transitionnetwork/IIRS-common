@@ -1,4 +1,11 @@
 <?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
+<?php
 // -------------------------------------------------------------------- configuration
 $accept_website_address = IIRS_0_setting( 'accept_website_address' );
 $offer_buy_domains      = IIRS_0_setting( 'offer_buy_domains' );

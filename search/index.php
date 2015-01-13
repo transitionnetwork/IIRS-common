@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -17,7 +24,7 @@ $listTIs = '';
   <style>
   </style>
 
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('search the transition towns of the world'); ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'search the transition towns of the world'); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
   <ul id="list">

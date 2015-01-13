@@ -1,4 +1,11 @@
 <?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
+<?php
 // --------------------------------------------- SECURITY: escaping
 // TODO: move all these in to a separate SECURITY file
 function IIRS_0_htmlentities( $string ) {
@@ -118,7 +125,7 @@ function IIRS_0_debug_print_inputs() {
 }
 
 //--------------------------------------------- print with translation
-function IIRS_0_print_translated_HTML_text( $string ) {
+function IIRS_0_print_translated_HTML_text( $string, $reason = FALSE ) {
   IIRS_0_print_HTML_text( IIRS_0_translation( $string ) );
 }
 
@@ -129,7 +136,7 @@ function IIRS_0_print_translated_javascript_variable( $name, $text ) {
 function IIRS_0_set_message_translated( $mess_no, $message, $message_detail = NULL, $level = IIRS_MESSAGE_USER_INFORMATION, $user_action = null, $args = null ) {
   IIRS_0_set_message( $mess_no, IIRS_0_translation( $message ), IIRS_0_translation( $message_detail ), $level, $user_action, $args );
   // message type should be checked by caller
-  // if ( is_string( $object ) ) IIRS_0_set_message( $mess_no, IIRS_0_translation( $object ), $level );
+  // if ( is_string( $object ) ) IIRS_0_set_message( $mess_no, IIRS_0_translation( $object ), NULL, $level );
   // elseif ( IIRS_is_error( $object ) ) IIRS_0_set_translated_error_message( $object );
 }
 
@@ -161,6 +168,48 @@ function IIRS_0_remove_transition_words( $town_name ) {
   return $town_name_stub;
 }
 
+function IIRS_0_get_nice_domains( $domain_part ) {
+  $translateable_nice_domains = IIRS_0_translation( 'nice_domains' );
+  if ( $translateable_nice_domains == 'nice_domains' ) {
+    $translateable_nice_domains  = 'transition{$domain_part}';
+    $translateable_nice_domains .= ',transitiontown{$domain_part}';
+    $translateable_nice_domains .= ',{$domain_part}transitiontown';
+    $translateable_nice_domains .= ',{$domain_part}transition';
+    $translateable_nice_domains .= ',{$domain_part}intransition';
+  }
+
+  // convert in to array with dynamic domain_part in
+  $nice_domains_static = explode( ',', $translateable_nice_domains );
+  $nice_domains        = array();
+  foreach ( $nice_domains_static as $nice_domain_static ) {
+    array_push( $nice_domains, trim( str_replace( '{$domain_part}', $domain_part, $nice_domain_static ) ) );
+  }
+
+  return $nice_domains;
+}
+
+function IIRS_0_is_generic_TLD( $TLD ) {
+  // http://en.wikipedia.org/wiki/Top-level_domain
+  // http://en.wikipedia.org/wiki/Generic_top-level_domain
+  // com, org, net, info
+  // aero, biz, coop, info, museum, name, and pro
+  return ( ! isset( $TLD ) || empty( $TLD ) || strlen( $TLD ) > 2 );
+}
+
+function IIRS_0_get_nice_TLDs() {
+  global $IIRS_host_TLD;
+
+  $translateable_all_TLDs = IIRS_0_translation( 'nice_tlds' );
+  if ( $translateable_all_TLDs == 'nice_tlds' ) {
+    $translateable_all_TLDs  = 'org';
+    $translateable_all_TLDs .= ',com';
+    $translateable_all_TLDs .= ',net';
+    if ( ! empty( $IIRS_host_TLD ) && ! IIRS_0_is_generic_TLD( $IIRS_host_TLD ) ) $translateable_all_TLDs .= ',' . $IIRS_host_TLD;
+  }
+
+  return explode( ',', $translateable_all_TLDs );
+}
+
 function IIRS_0_get_DOM_value( $startNode, $xpathString ) {
   $ret      = '';
   $oXPath   = new DOMXpath( $startNode->ownerDocument );
@@ -188,6 +237,7 @@ function IIRS_0_message_class( $level ) {
 
 function IIRS_0_message_html( $mess_no, $message, $message_detail = null, $level = IIRS_MESSAGE_USER_INFORMATION, $user_action = null, $args = null ) {
   // SECURITY: $message is text, NOT HTML. it will be pushed through IIRS_0_escape_for_HTML_text()
+  // SECURITY: $message_detail is text. SHOULD NOT be dynamic. it will be translated
   // the caller should NOT escape the input
   // IIRS_0_message_html() output should be pushed through IIRS_0_print_HTML()
   // $message is also NOT translated. the caller must use the translation functions
@@ -217,23 +267,23 @@ function IIRS_0_TI_verify_add_TI($user_ID, $IIRS_host_domain, $initiative_name, 
 
   // --------------------------------------- 1) check data input validity
   // the user is already registered, so we can use IIRS_0_details_user()
-  // IIRS_0_akismet_check_ti_registration_name() returns true for is SPAM
   // TODO: concurrency issues with registration
   if ( ! is_numeric( $location_latitude ) || ! is_numeric( $location_longitude ) ) {
-    $ret = new IIRS_Error( IIRS_INVALID_TI_INPUTS, 'We think you are a SPAM robot. please email us to resolve this issue.', 'location data is not numeric', IIRS_MESSAGE_USER_ERROR );
+    $ret = new IIRS_Error( IIRS_INVALID_TI_INPUTS, 'We think you are a SPAM robot. please email us to resolve this issue.', 'location data is not numeric', IIRS_MESSAGE_USER_ERROR, IIRS_MESSAGE_NO_USER_ACTION, array( '$location_latitude' => $location_latitude, '$location_longitude' => $location_longitude ) );
   }
 
   // --------------------------------------- 2) check user 1-1 TI relation
   if ( ! $ret ) {
     $TI = IIRS_0_details_TI_user(); // returns NULL if no TI associated
     if ( is_array( $TI ) ) {
-      $ret = new IIRS_Error( IIRS_USER_ALREADY_HAS_TI, 'You have already registered a Transition Initiative under this username. Please logout and re-register', "User already associated with TI [$TI[name]]", IIRS_MESSAGE_USER_ERROR );
+      $ret = new IIRS_Error( IIRS_USER_ALREADY_HAS_TI, 'You have already registered a Transition Initiative under this username. Please logout and re-register', "User already associated with TI [$TI[name]]", IIRS_MESSAGE_USER_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $TI );
     } elseif ( IIRS_is_error( $TI ) ) {
       $ret = $TI;
     }
   }
 
   // --------------------------------------- 3) check duplicate registration by vicinity
+  // currently disabled. will always return ok
   if ( ! $ret ) {
     $vicinity_match = IIRS_0_TI_vicinity_match( $location_latitude, $location_longitude, $location_description );
     if ( $vicinity_match === TRUE || IIRS_is_error( $vicinity_match ) ) $ret = $vicinity_match;
@@ -252,16 +302,18 @@ function IIRS_0_TI_verify_add_TI($user_ID, $IIRS_host_domain, $initiative_name, 
       //   OR
       //   someone OWNS this name and you are not permitted to create an Initiative here.
       IIRS_0_debug_var_dump( $TI_same_name );
-      $ret = new IIRS_Error( IIRS_TI_EXISTS_SAME_NAME, 'A Transition Initiative already exists with this name. Please add something to the name or change it and try again', 'TI Name matched exactly in data verification stage', IIRS_MESSAGE_USER_WARNING );
+      $ret = new IIRS_Error( IIRS_TI_EXISTS_SAME_NAME, 'A Transition Initiative already exists with this name. Please add something to the name or change it and try again', 'TI Name matched exactly in data verification stage', IIRS_MESSAGE_USER_WARNING, IIRS_MESSAGE_NO_USER_ACTION, array( '$TI_same_name' => $TI_same_name ) );
     } elseif ( IIRS_is_error( $TI_same_name ) ) {
       $ret = $TI_same_name;
     }
   }
 
   // --------------------------------------- 5) check for SPAM using AKISMET
+  // IIRS_0_akismet_check_ti_registration_name() returns true for is SPAM
   if ( ! $ret ) {
     $is_SPAM = IIRS_0_akismet_check_ti_registration_name( IIRS_0_details_user(), $initiative_name );
-    if ( $is_SPAM === TRUE || IIRS_is_error( $is_SPAM ) ) $ret = $is_SPAM;
+    if     ( $is_SPAM === TRUE )         $ret = new IIRS_Error( IIRS_AKISMET_SAYS_SPAM, 'Akismet thinks that your entry is SPAM. So we cannot accept it. Sorry.', 'Akismet returned true for SPAM detection', IIRS_MESSAGE_USER_ERROR, IIRS_MESSAGE_NO_USER_ACTION, array( '$initiative_name' => $initiative_name ) );
+    elseif ( IIRS_is_error( $is_SPAM ) ) $ret = $is_SPAM;
   }
 
   // --------------------------------------- F) FINAL: if no vertification issues registrered then everything ok

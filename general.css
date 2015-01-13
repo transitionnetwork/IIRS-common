@@ -1,3 +1,8 @@
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+
 #IIRS_0_debug > pre {
   font-size:10px;
   line-height:11px;
@@ -140,6 +145,28 @@ body #IIRS_0_list_selector .IIRS_0_button {
   color:#ffffff;
   font-weight:bold;
 }
+.IIRS_0_message_level_system-error {
+  background-image:url(/IIRS/images/error);
+  background-color:#ff0000;
+  border:1px solid #555555;
+  color:#ffffff;
+  font-weight:bold;
+}
+.IIRS_0_message_level_external-system-error {
+  background-image:url(/IIRS/images/error);
+  background-color:#ff0000;
+  border:1px solid #555555;
+  color:#ffffff;
+  font-weight:bold;
+}
+.IIRS_0_message_level_unregistered-message-level {
+  background-image:url(/IIRS/images/error);
+  background-color:#ff0000;
+  border:1px solid #555555;
+  color:#ffffff;
+  font-weight:bold;
+}
+
 .IIRS_message_detail {
   display:none;
 }
@@ -164,6 +191,9 @@ body #IIRS_0_list_selector .IIRS_0_button {
 .IIRS_0_clear {
   clear:both;
 }
+.IIRS_0_float_right {
+  float:right;
+}
 .IIRS_0_horizontal_section {
   width:100%;
   clear:both;
@@ -171,6 +201,9 @@ body #IIRS_0_list_selector .IIRS_0_button {
 .IIRS_0_textarea {
   width:100%;
   min-height:100px;
+}
+.IIRS_0_hidden {
+  display:none;
 }
 
 /* ------------------------ IIRS graphic design, minimal and overridden by host if wanted */
@@ -183,6 +216,14 @@ body #IIRS_0_list_selector .IIRS_0_button {
 .IIRS_0_bigbutton {
   height:40px;
 }
+.IIRS_0_false_submit {
+  display:none;
+}
 .IIRS_0_reason {
   color:#666666;
+}
+.IIRS_0_data_license {
+  font-size:11px;
+  color:#888888;
+  text-align:right;
 }

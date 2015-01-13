@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -18,12 +25,12 @@ IIRS_0_TI_update_TI(array('summary' => $summary));
 </pre></div>
 
 <div id="IIRS_0">
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('advanced settings'); ?></div>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'advanced settings'); ?></div>
   <form method="POST" id="IIRS_0_form_popup_advanced" action="finished" class="IIRS_0_clear"><div>
     <?php IIRS_0_printEncodedPostParameters(); ?>
 
     <br class="IIRS_0_clear" />
-    <input class="IIRS_0_bigbutton IIRS_0_back" type="button" value="&lt;&lt; <?php IIRS_0_print_translated_HTML_text('back'); ?>" />
-    <input class="IIRS_0_bigbutton" type="submit" value="<?php IIRS_0_print_translated_HTML_text('finish'); ?>" />
+    <input class="IIRS_0_bigbutton IIRS_0_back" type="button" value="&lt;&lt; <?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'back'); ?>" />
+    <input class="IIRS_0_bigbutton" type="submit" value="<?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'finish'); ?>" />
   </div></form>
 </div>

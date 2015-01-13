@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -10,45 +17,46 @@ IIRS_0_debug_print( $debug_environment );
 
 //------------------------------------- values
 $summaryFromDomain    = '';
-$summary_from_website = 'summary';
+$summary_from_website = IIRS_0_translation( 'summary' );
 $valid_dns            = TRUE;
 $IIRS_error           = null;
 $domain_entered       = ($domain && $domain != 'none');
 $is_unchecked_domain  = ! empty( $domain_other );
+$ip_address           = NULL;
 
 if ( $domain_entered ) {
-  IIRS_0_debug_print("domain: carrying out DNS [and WHOIS] lookup on [$domain]");
   // ----------------------------------------------------------------- DNS lookup
   //need to make sure this lookup is valid
   //before we actually start looking for about us pages
   //because it will take a long time from the timeouts
   //domain_other will be filled out if it has not already been checked by the previous domain_lookup
-  if ($is_unchecked_domain) {
-    $domain = trim($domain);
-    $domain = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $domain);
-    $valid_dns    = checkdnsrr($domain);
+  if ( $is_unchecked_domain ) {
+    $domain     = trim($domain);
+    $domain     = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $domain);
+    IIRS_0_debug_print("domain: carrying out DNS [and WHOIS] lookup on [$domain]");
+    $ip_address = gethostbyname( $domain ); // gethostbyname PHP 4,5
+    $valid_dns  = ( $ip_address != $domain );
   }
 
   if ($valid_dns) {
-    IIRS_0_debug_print("DNS valid, updating domain to [$domain]");
+    IIRS_0_debug_print("DNS valid [$ip_address], updating domain to [$domain]");
     IIRS_0_TI_update_TI(array('domain' => $domain));
 
     //----------------------------------------------------- about us section from domain
     $old_error_reporting = error_reporting(0);
     $timeout             = 1.0;
-    if ( ($aboutus = IIRS_0_http_request("http://$domain/aboutus",  null, $timeout))
-      || ($aboutus = IIRS_0_http_request("http://$domain/about",    null, $timeout))
-      || ($aboutus = IIRS_0_http_request("http://$domain/about_us", null, $timeout))
-      || ($aboutus = IIRS_0_http_request("http://$domain/",         null, $timeout))
+    if ( (!IIRS_is_error($aboutus = IIRS_0_http_request("http://$domain/aboutus",  null, $timeout)))
+      || (!IIRS_is_error($aboutus = IIRS_0_http_request("http://$domain/about",    null, $timeout)))
+      || (!IIRS_is_error($aboutus = IIRS_0_http_request("http://$domain/about_us", null, $timeout)))
+      || (!IIRS_is_error($aboutus = IIRS_0_http_request("http://$domain/",         null, $timeout)))
     ) {
       $oAboutUs = new DOMDocument();
       $oAboutUs->loadHTML($aboutus);
       $xpath = new DOMXpath($oAboutUs);
 
-      $summary_from_website = 'summary (' . IIRS_0_translation('from the website') . ')';
-
-      $elements = $xpath->query("//*[@id='content']");
-      if (!is_null($elements)) {
+      $elements = $xpath->query("//*[@id='content'] | //*[@class='layout-container']");
+      if ( ! is_null( $elements ) && $elements->length ) {
+        $summary_from_website .= ' (' . IIRS_0_translation( 'from the website' ) . ')';
         foreach ($elements as $element) {
           $summaryFromDomain .= $element->textContent . "\n";
         }
@@ -56,10 +64,11 @@ if ( $domain_entered ) {
         $summaryFromDomain = preg_replace('/\n\s*\n/', "\n", $summaryFromDomain);
         $summaryFromDomain = preg_replace('/^\s+|\s+$|^\s+/', "", $summaryFromDomain);
       }  else IIRS_0_debug_print("cannot find content in the aboutus response.");
-    } else IIRS_0_debug_print("aboutus attemps all returned blank strings.");
+    } else IIRS_0_debug_print("aboutus attemps all returned blank strings or [404] errors.");
     error_reporting($old_error_reporting);
   } else { // $valid_dns
-    $IIRS_error = new IIRS_Error( IIRS_INVALID_WEBSITE_DNS, 'Your website was not found, please re-enter it or select none', 'DNS lookup failed', IIRS_MESSAGE_USER_WARNING );
+    $IIRS_error = new IIRS_Error( IIRS_INVALID_WEBSITE_DNS, 'Your website was not found, please re-enter it or select none', 'DNS lookup failed', IIRS_MESSAGE_USER_WARNING, IIRS_MESSAGE_NO_USER_ACTION, array( '$domain' => $domain ) );
+    IIRS_0_debug_print( $IIRS_error );
   }
 } else { // $domain_entered
   IIRS_0_debug_print("no domain entered, or 'none' entered");
@@ -120,14 +129,14 @@ if ( $domain_entered ) {
     <form method="POST" id="IIRS_0_form_popup_summary_projects" action="finished" class="IIRS_0_clear IIRS_0_formPopupNavigate"><div>
       <?php IIRS_0_printEncodedPostParameters(); ?>
 
-      <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_translated_HTML_text( $summary_from_website ); ?>:</h3>
+      <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_HTML_text( $summary_from_website ); ?>:</h3>
       <?php IIRS_0_HTML_editor($summaryFromDomain, 'summary'); ?>
 
       <?php if (IIRS_0_setting('image_entry')) { ?>
-        <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_translated_HTML_text('image'); ?>:</h3>
-        <div id="IIRS_0_searchcontrol"><?php IIRS_0_print_translated_HTML_text('Loading Google images for'); IIRS_0_print_HTML_text( " $town_name"); ?></div>
+        <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'image'); ?>:</h3>
+        <div id="IIRS_0_searchcontrol"><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'Loading Google images for'); IIRS_0_print_HTML_text( " $town_name"); ?></div>
         <div id="IIRS_0_searchForm"><?php IIRS_0_print_HTML_text( "$town_name town" ); ?></div>
-        <?php IIRS_0_print_translated_HTML_text('or upload'); ?>:
+        <?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'or upload'); ?>:
       <?php } ?>
 
       <div class="IIRS_0_horizontal_section">
@@ -138,17 +147,17 @@ if ( $domain_entered ) {
 
     <?php if ($add_projects) { ?>
       <form method="POST" id="IIRS_0_form_popup_2" action="advanced.php" class="IIRS_0_horizontal_section IIRS_0_formPopupNavigate"><div>
-        <?php IIRS_0_print_translated_HTML_text('project or idea thing'); ?>:
+        <?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'project or idea thing'); ?>:
         <table id="IIRS_0_details">
-          <tr><td><?php IIRS_0_print_translated_HTML_text('name of thing'); ?></td><td><input /></td></tr>
-          <tr><td><?php IIRS_0_print_translated_HTML_text('description of thing'); ?></td><td><input /></td></tr>
+          <tr><td><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'name of thing'); ?></td><td><input /></td></tr>
+          <tr><td><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'description of thing'); ?></td><td><input /></td></tr>
         </table>
         <div id="IIRS_0_details_teaser">
           <img src="<?php IIRS_0_print_HTML_image_src( "$imageURLStem/network_paper" ); ?>" />
-          <?php IIRS_0_print_translated_HTML_text('Your nearest Transition Town is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)'); ?>
+          <?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'Your nearest Transition Town is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)'); ?>
         </div>
 
-        <input disabled="1" class="IIRS_0_bigbutton" type="button" value="<?php IIRS_0_print_translated_HTML_text('add another thing'); ?>" />
+        <input disabled="1" class="IIRS_0_bigbutton" type="button" value="<?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'add another thing'); ?>" />
       </div></form>
     <?php } ?>
   <?php } ?>

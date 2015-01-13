@@ -1,4 +1,11 @@
 <?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
+<?php
 // view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translated_HTML_text
 $start_directory    = ( isset($_GET['start_directory']) ? $_GET['start_directory'] : dirname(__FILE__) );
 $fix_file           = ( $_GET['fix_file'] );

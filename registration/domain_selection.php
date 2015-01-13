@@ -1,7 +1,14 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
-global $debug_environment;
+global $debug_environment, $location_is_example;
 require_once( IIRS__COMMON_DIR . 'utility.php' );
 require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
 require_once( IIRS__COMMON_DIR . 'environment.php' );
@@ -9,6 +16,17 @@ require_once( IIRS__COMMON_DIR . 'registration/inputs.php' );
 require_once( IIRS__COMMON_DIR . 'location.php' );
 require_once( IIRS__COMMON_DIR . 'akismet.php' );
 IIRS_0_debug_print( $debug_environment );
+
+/* This is the start of the multi-threaded version of the domain checking code
+ * it currently requires PECL > 2.0.0
+ * http://php.net/manual/en/book.pthreads.php
+ *
+ * require_once( IIRS__COMMON_DIR . 'IIRS_DomainChecker_Thread.php' );
+ * new IIRS_DomainChecker_Thread( 'abc.com' );
+ * $valid_domains = IIRS_DomainChecker_Thread::waitAllFinished();
+ * var_dump($valid_domains);
+ * exit(0);
+ */
 
 IIRS_0_debug_print("-------------- User and TI registration");
 $TI_save_error  = NULL;
@@ -82,13 +100,10 @@ if ( ! $TI_save_error ) {
   $domain_part       = ($location_is_example ? 'bedford' : $town_name);
   $nice_domains_html = '';
 
-  // TODO: internationalisation of nice_domain array and TLD array
-  $nice_domains = array();
-  $nice_domains[] = "transition{$domain_part}";
-  $nice_domains[] = "transitiontown{$domain_part}";
-  $nice_domains[] = "{$domain_part}transitiontown";
-  $nice_domains[] = "{$domain_part}transition";
-  $nice_domains[] = "{$domain_part}intransition";
+  // internationalisation of nice_domain array and TLD array
+  $nice_domains      = IIRS_0_get_nice_domains( $domain_part );
+  IIRS_0_debug_print( 'nice_domain stems:' );
+  IIRS_0_debug_var_dump( $nice_domains );
 
   //using our tld list is too time consuming
   //could use threads but beyond scope for now
@@ -103,19 +118,22 @@ if ( ! $TI_save_error ) {
   }
   IIRS_0_debug_print("check potential domain string [$domain_part] combinations against [" . count($all_TLDs) . "] TLDs:");
   */
-  $all_TLDs = array('org', 'org.uk', 'com', 'net');
+  $all_TLDs = IIRS_0_get_nice_TLDs();
   $option = 1;
 
   // NOTE: that in some server environments DNS checks like this will hang the process
-  // need to continue these all on separate threads...
+  // need to continue these all on separate threads... v2
   if ( true ) {
+    IIRS_0_debug_print( 'testing nice_domains...' );
     foreach ($nice_domains as $nice_domain) {
       foreach ($all_TLDs as $tld) {
         $full_domain = strtolower("$nice_domain.$tld");
-        //checkdnsrr($full_domain) PHP >= 4.0
-        //could also use gethostbyname($full_domain)
-        $valid_dns   = checkdnsrr($full_domain);
+        IIRS_0_debug_print( "testing [$full_domain]" );
+        $ip_address  = gethostbyname( $full_domain ); // gethostbyname PHP 4,5
+        $valid_dns   = ( $ip_address != $full_domain );
+
         if ($valid_dns) {
+          IIRS_0_debug_print( "  valid [$ip_address]" );
           $domains_found  = true;
           $selected       = ($option == 1 ? 'checked="1"' : '');
           $selected_class = ($option == 1 ? 'selected' : '');
@@ -131,6 +149,8 @@ if ( ! $TI_save_error ) {
             </li>
 HTML;
           $option++;
+        } else {
+          IIRS_0_debug_print( "  invalid" );
         }
       }
     }
@@ -143,8 +163,8 @@ HTML;
 <div id="IIRS_0">
   <?php
   if ( $TI_save_error ) {
-      // IIRS_0_set_translated_error_message( ... ) uses IIRS_0_set_message( ... )
-      IIRS_0_set_translated_error_message( $TI_save_error );
+    // IIRS_0_set_translated_error_message( ... ) uses IIRS_0_set_message( ... )
+    IIRS_0_set_translated_error_message( $TI_save_error );
   } else {
     // IIRS_0_set_message() will escape the
     $message = IIRS_0_translation('you are now registered') . ". $initiative_name " . IIRS_0_translation('is go!');
@@ -181,18 +201,21 @@ HTML;
           </label>
         </li>
         <li id="IIRS_0_other">
-          <?php IIRS_0_print_translated_HTML_text( $domains_found ? 'other' : 'your website' ); ?>:
+          <?php
+            if ( $domains_found ) IIRS_0_print_translated_HTML_text( 'other' );
+            else IIRS_0_print_translated_HTML_text( 'your website' );
+          ?>:
           <input id="IIRS_0_research_domain_other" name="domain_other" />
         </li>
       </ul>
 
       <?php if ( $offer_buy_domains ) { ?>
         <ul id="IIRS_0_domain_setup_options">
-          <li><input id="IIRS_0_domain_setup_worpress" name="domain_setup" type="radio" />         <label for="IIRS_0_domain_setup_worpress"><?php IIRS_0_print_translated_HTML_text( 'load' ); ?><a href="http:// wordpress.org" target="_blank">Wordpress</a><?php IIRS_0_print_translated_HTML_text( 'on to this domain and give me the keys' ); ?></label></li>
-          <li><input id="IIRS_0_domain_setup_drupal" name="domain_setup" type="radio" />           <label for="IIRS_0_domain_setup_drupal"><?php IIRS_0_print_translated_HTML_text( 'load' ); ?><a href="http:// drupal.org" target="_blank">Drupal</a><?php IIRS_0_print_translated_HTML_text( 'on to this domain and give me the keys' ); ?></label></li>
-          <li><input id="IIRS_0_domain_setup_none" checked="1" name="domain_setup" type="radio" /> <label for="IIRS_0_domain_setup_none"><?php IIRS_0_print_translated_HTML_text( 'stop being clever and just give me the domains' ); ?></label></li>
+          <li><input id="IIRS_0_domain_setup_worpress" name="domain_setup" type="radio" />         <label for="IIRS_0_domain_setup_worpress"><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'load' ); ?><a href="http:// wordpress.org" target="_blank">Wordpress</a><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'on to this domain and give me the keys' ); ?></label></li>
+          <li><input id="IIRS_0_domain_setup_drupal" name="domain_setup" type="radio" />           <label for="IIRS_0_domain_setup_drupal"><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'load' ); ?><a href="http:// drupal.org" target="_blank">Drupal</a><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'on to this domain and give me the keys' ); ?></label></li>
+          <li><input id="IIRS_0_domain_setup_none" checked="1" name="domain_setup" type="radio" /> <label for="IIRS_0_domain_setup_none"><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'stop being clever and just give me the domains' ); ?></label></li>
         </ul>
-        <input id="IIRS_0_buydomains" class="IIRS_0_bigbutton" disabled="1" type="button" value="<?php IIRS_0_print_translated_HTML_text( 'buy marked domains' ); ?>" />
+        <input id="IIRS_0_buydomains" class="IIRS_0_bigbutton" disabled="1" type="button" value="<?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'buy marked domains' ); ?>" />
       <?php } ?>
 
       <div class="IIRS_0_horizontal_section">

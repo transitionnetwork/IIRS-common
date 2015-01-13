@@ -1,4 +1,11 @@
 <?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
+<?php
 require_once( IIRS__COMMON_DIR . 'define.php' );     // IIRS plugin settings fixed for this version
 require_once( IIRS__COMMON_DIR . 'IIRS_Error.php' ); // Error object. check for this return with IIRS_is_error( $ret )
 require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
@@ -9,7 +16,7 @@ global $debug_environment;
 $debug_environment = '';
 
 //---------------------------------------------------------- misc settings
-global $IIRS_widget_mode, $IIRS_plugin_mode, $IIRS_0_default_lat, $IIRS_0_default_lng;
+global $IIRS_common_dir, $IIRS_widget_mode, $IIRS_plugin_mode, $IIRS_0_default_lat, $IIRS_0_default_lng;
 $IIRS_widget_mode     = (IIRS_0_input('IIRS_widget_mode') == 'true');
 $IIRS_plugin_mode     = ! $IIRS_widget_mode;
 $IIRS_0_default_lat   = 52.1359783;

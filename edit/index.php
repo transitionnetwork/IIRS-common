@@ -1,3 +1,10 @@
+<?php
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+?>
+
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
@@ -91,7 +98,7 @@ if ( IIRS_0_logged_in() ) {
 
       $location_options = IIRS_0_location_to_HTML( $location_array, $location_uniques, true ); // true = selected
     } else {
-      $IIRS_error = new IIRS_Error( IIRS_USER_NO_ASSOCIATED_TI, 'There is no Initiative associated with this user', 'TI not linked to this user',  IIRS_MESSAGE_USER_ERROR );
+      $IIRS_error = new IIRS_Error( IIRS_USER_NO_ASSOCIATED_TI, 'There is no Initiative associated with this user', 'TI not linked to this user',  IIRS_MESSAGE_USER_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $user );
       IIRS_0_debug_print( $IIRS_error );
     }
   } else {
@@ -115,8 +122,8 @@ if ( $towns_searched_for ) {
 <div id="IIRS_0">
   <?php
   if ( $IIRS_error ) {
-      // IIRS_0_set_translated_error_message( ... ) uses IIRS_0_set_message( ... )
-      IIRS_0_set_translated_error_message( $IIRS_error );
+    // IIRS_0_set_translated_error_message( ... ) uses IIRS_0_set_message( ... )
+    IIRS_0_set_translated_error_message( $IIRS_error );
   } else {
   ?>
   <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( 'setup editor' ); ?>

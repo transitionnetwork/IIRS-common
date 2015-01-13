@@ -1,3 +1,8 @@
+/* Copyright 2015, 2016 Transition Network ltd
+ * This program is distributed under the terms of the GNU General Public License
+ * as detailed in the COPYING file included in the root of this plugin
+ */
+
 /* static javascript only
  * independent of the environment variables
  * separately called by loaders and changes
@@ -22,9 +27,9 @@ function IIRS_0_attachEditInteractionEvents() {
       if (window.IIRS_0_message ) window.IIRS_0_message(g_tFormNotValid );
       else alert(g_tFormNotValid );
     } else {
-      oParameters.push({"name":"town_name", "value":sNewTownName} );
+      oParameters.push( {"name":"town_name", "value":sNewTownName} );
       //set content
-      IIRS_0_postAsForm(document.location, oParameters );
+      IIRS_0_postAsForm( document.location, oParameters );
     }
 
     event.preventDefault();
