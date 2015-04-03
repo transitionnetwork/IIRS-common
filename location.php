@@ -4,9 +4,36 @@
  * as detailed in the COPYING file included in the root of this plugin
  */
 
-global $location_is_example, $mapping_provider;
+//<title>Registration SCREEN #2</title>
+
+global $location_is_example, $mapping_provider, $location_array_not_specified;
+$location_array_not_specified = array(
+  'description'  => "not-specified",
+  'latitude'     => "0",
+  'longitude'    => "0",
+  'full_address' => "not-specified",
+  'country'      => "not-specified",
+  'granuality'   => "not-specified",
+  'bounds'       => "not-specified",
+);
 $mapping_provider    = 'mapquest';
 $location_is_example = ( isset( $town_name ) && substr( $town_name, 0, 7 ) == 'example' );
+
+function IIRS_0_tld_bounds( $tld = '' ) {
+  global $IIRS_host_TLD;
+
+  $host_TLD_touse = ( $tld = '' ? $IIRS_host_TLD : $tld );
+  $host_ISO_3166  = strtoupper( $host_TLD_touse );
+  $bounds         = IIRS_0_iso_3166_bounds( $host_ISO_3166 );
+
+  return $bounds;
+}
+
+function IIRS_0_iso_3166_bounds( $ISO_3166_code ) {
+  require_once( 'iso-3166-bounds.php' );
+  $bounds = $iso_3166_bounds[ $ISO_3166_code ];
+  return $bounds;
+}
 
 function IIRS_0_location_search_options( $town_name, &$location_uniques = array() ) {
   // return null on null $location_arrays (indicates error)
@@ -29,7 +56,7 @@ function IIRS_0_location_lookup( $town_name ) {
     require_once( $location_provider );
     $location_arrays = IIRS_0_geocode( $town_name );
   } else {
-    $location_arrays = new IIRS_Error( IIRS_LOCATION_PROVIDER_INVALID, 'Cannot lookup your location at the moment. Please try again tomorrow', 'Mapping provider not valid, please set one', IIRS_MESSAGE_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, array( '$mapping_provider' => $mapping_provider ) );
+    $location_arrays = new IIRS_Error( IIRS_LOCATION_PROVIDER_INVALID, 'Oops, it seems that the our servers are not responding! The manager has been informed and is trying to solve the problem. Please come back here tomorrow :)', 'Mapping provider not valid, please set one', IIRS_MESSAGE_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, array( '$mapping_provider' => $mapping_provider ) );
   }
 
   if ( IIRS_is_error( $location_arrays ) ) IIRS_0_debug_print( $location_arrays );

@@ -17,11 +17,8 @@ require_once( IIRS__COMMON_DIR . 'registration/inputs.php' );
 IIRS_0_TI_update_TI( array( 'summary' => $summary ) );
 
 $url = IIRS_0_setting( 'thankyou_for_registering_url' );
+if ( empty( $url ) ) $url = IIRS_0_URL_view_TI();
 if ( $url ) IIRS_0_redirect( $url );
+IIRS_0_debug_print( "thankyou_for_registering_url: [$url]" );
 ?>
 </pre></div>
-
-<div id="IIRS_0">
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('thanks'); ?></div>
-  <p><?php IIRS_0_print_translated_HTML_text('thankyou message'); ?></p>
-</div>

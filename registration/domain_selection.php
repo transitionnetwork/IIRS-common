@@ -3,17 +3,19 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
+
+//<title>Registration SCREEN #3</title>
 ?>
 
 <div id="IIRS_0_debug"><pre>
 debug output:
 <?php
-global $debug_environment, $location_is_example;
+global $debug_environment, $location_is_example, $location_array_not_specified;
 require_once( IIRS__COMMON_DIR . 'utility.php' );
 require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
 require_once( IIRS__COMMON_DIR . 'environment.php' );
-require_once( IIRS__COMMON_DIR . 'registration/inputs.php' );
 require_once( IIRS__COMMON_DIR . 'location.php' );
+require_once( IIRS__COMMON_DIR . 'registration/inputs.php' );
 require_once( IIRS__COMMON_DIR . 'akismet.php' );
 IIRS_0_debug_print( $debug_environment );
 
@@ -72,18 +74,36 @@ if ( IIRS_is_error( $native_user_ID ) ) {
     $TI_save_error = $native_ti_ID;
   } else {
     IIRS_0_debug_print( "TI addition completed [$native_ti_ID]" );
+    if ( $location_array == $location_array_not_specified ) {
+      IIRS_0_debug_print( 'location not specified: alerting central command' );
+      $location_unspecified_email_message = "Location un-specified during registration of [$town_name]";
+      new IIRS_Error( IIRS_GEOCODE_REGISTRATION_WITHOUT_LOCATION, $location_unspecified_email_message, "Location un-specified during registration of [$town_name] [$native_ti_ID]", IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, NULL );
+    }
 
     // ------------------------------------------- registration email with generated password to the user
     if ( is_null( $pass ) ) {
       IIRS_0_debug_print( "resultant password unknown! no email will be sent" );
     } else {
-      $subject  = IIRS_0_translation( 'your new Transition account' );
+      $subject  = IIRS_0_registration_email_subject();
       $body     = IIRS_0_registration_email_html( $name, $pass );
+
+      //user email
       IIRS_0_debug_print( "Email user registration [$body]" );
       $email_ok = IIRS_0_send_email( $email, $subject, $body );
-
       if ( IIRS_is_error( $email_ok ) ) {
         IIRS_0_debug_print( "email failed to send [$email_ok]" );
+      }
+
+      //admin registration alert email
+      if ($admin_email_address = IIRS_0_setting('registration_notification_email')) {
+        $admin_subject = IIRS_0_translation( '[IIRS admin notice] new Transition account registered' );
+        if (IIRS_0_debug()) $admin_email_address = 'annesley_newholm@yahoo.it';
+
+        IIRS_0_debug_print( "Email administration of user registration" );
+        $email_ok = IIRS_0_send_email( $admin_email_address, $admin_subject, $body );
+        if ( IIRS_is_error( $email_ok ) ) {
+          IIRS_0_debug_print( "administration registration heads up email failed to send [$email_ok]" );
+        }
       }
     }
   }
@@ -139,12 +159,13 @@ if ( ! $TI_save_error ) {
           $selected_class = ($option == 1 ? 'selected' : '');
           // SECURITY: $full_domain is constructed from user input
           $full_domain_escaped = IIRS_0_escape_for_HTML_href( $full_domain );
+          $view_in_new_window  = IIRS_0_translation( 'view in new window' );
           $nice_domains_html .= <<<"HTML"
             <li class="$selected_class">
               <input $selected name="domain" class="IIRS_0_radio" value="$full_domain" type="radio" id="IIRS_0_domain_{$option}_input" />
               <label for="IIRS_0_domain_{$option}_input">
                 $full_domain
-                <div class="IIRS_0_status"><a target="_blank" href="http://$full_domain">view in new window</a></div>
+                <div class="IIRS_0_status"><a target="_blank" href="http://$full_domain">$view_in_new_window</a></div>
               </label>
             </li>
 HTML;
@@ -167,7 +188,7 @@ HTML;
     IIRS_0_set_translated_error_message( $TI_save_error );
   } else {
     // IIRS_0_set_message() will escape the
-    $message = IIRS_0_translation('you are now registered') . ". $initiative_name " . IIRS_0_translation('is go!');
+    $message = IIRS_0_translation('you are now registered.') . " $initiative_name " . IIRS_0_translation('is go!');
     if ( $IIRS_widget_mode ) $message .= "\n" . IIRS_0_translation('you will need to log in to') . ' TransitionNetwork.org ' . IIRS_0_translation('to manage your registration, NOT this website') . '.';
     IIRS_0_set_message( IIRS_MESSAGE_SUCCESS_REGISTRATION, $message );
     ?>
@@ -178,17 +199,17 @@ HTML;
       <input name="native_user_ID" type="hidden" value="<?php IIRS_0_print_HTML_form_value( $native_user_ID ); ?>" />
       <input name="native_ti_ID" type="hidden" value="<?php IIRS_0_print_HTML_form_value( $native_ti_ID ); ?>" />
 
-      <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('website selection'); ?></div>
+      <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text('Here are the websites we have found that might correspond to your initiative. We invite you to select one; complete the "other" field or choose the option "no wesbite".'); ?></div>
       <ul id="IIRS_0_list_selector">
         <?php if ( ! $domains_found ) { ?>
           <!--li class="IIRS_0_domain IIRS_0_message">
             <img src="< ?php IIRS_0_print_HTML_image_src("$IIRS_URL_image_stem/information"); ?>" />
             < ?php
-              IIRS_0_print_translated_HTML_text('no registered websites found for this town');
+              IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'no registered websites found for this town');
               IIRS_0_print_HTML_text( " $town_name " );
-              IIRS_0_print_translated_HTML_text('you will need to email');
+              IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'you will need to email');
               IIRS_0_print_HTML( ' ' . IIRS_EMAIL_TEAM_LINK . ' ' );
-              IIRS_0_print_translated_HTML_text('to register by email. please type your website name in below if you have one');
+              IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'to register by email. please type your website name in below if you have one');
             ?>
           </li -->
         <?php } ?>

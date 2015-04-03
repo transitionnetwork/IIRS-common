@@ -3,9 +3,11 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
-?>
 
-<?php
+//writing the REGISTRATION EMAIL here because that's the only translation task in this file
+//<title>REGISTRATION EMAIL</title>
+
+
 global $IIRS_0_force_complete_framework;
 $IIRS_0_force_complete_framework = true;
 
@@ -82,11 +84,17 @@ if (!function_exists('IIRS_0_set_message')) {
 
 if (!function_exists('IIRS_0_redirect')) {
   function IIRS_0_redirect( $url ) {
-    $protocol = ( isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0' );
-    header( $protocol . ' 302 Moved Temporarily' );
-    $GLOBALS['http_response_code'] = 302;
+    header( "Location: $url", true, 302 );
+    exit(0);
   }
 }
+if (!function_exists('IIRS_0_registration_email_subject')) {
+  function IIRS_0_registration_email_subject() {
+    // this is here so that the translations and functionality are grouped together with the email_html
+    return IIRS_0_translation( 'your new Transition account' );
+  }
+}
+
 
 if (!function_exists('IIRS_0_registration_email_html')) {
   function IIRS_0_registration_email_html( $name, $password = null ) {

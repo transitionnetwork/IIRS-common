@@ -24,7 +24,7 @@ $listTIs = '';
   <style>
   </style>
 
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'search the transition towns of the world'); ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'search the Transition Initiatives of the world'); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
   <ul id="list">

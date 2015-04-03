@@ -64,9 +64,9 @@ function IIRS_0_akismet_comment_check( $author_data ) {
     // the low level HTTP request got an error, so return it
     $ret = $response_body;
   } elseif ( '' == $response_body ) {
-    $ret = new IIRS_Error( IIRS_AKISMET_NOTHING, 'Failed to check the entries against the Akismet SPAM database', 'Akismet returned an invalid response (empty string)', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $author_data );
+    $ret = new IIRS_Error( IIRS_AKISMET_NOTHING, 'Failed to check the entries against the Akismet SPAM database. Please try again tomorrow :)', 'Akismet returned an invalid response (empty string)', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $author_data );
   } elseif ( is_null($response_body) ) {
-    $ret = new IIRS_Error( IIRS_AKISMET_FAILED,  'Failed to check the entries against the Akismet SPAM database', 'Akismet returned a big fat nothing', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $author_data );
+    $ret = new IIRS_Error( IIRS_AKISMET_FAILED,  'Failed to check the entries against the Akismet SPAM database. Please try again tomorrow :)', 'Akismet returned a big fat nothing', IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, IIRS_MESSAGE_NO_USER_ACTION, $author_data );
   } else {
     IIRS_0_debug_print( "Akismet HTTP response:" );
     IIRS_0_debug_var_dump( $response_body );

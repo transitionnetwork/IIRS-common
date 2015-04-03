@@ -3,9 +3,7 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
-?>
 
-<?php
 require_once( IIRS__COMMON_DIR . 'define.php' );     // IIRS plugin settings fixed for this version
 require_once( IIRS__COMMON_DIR . 'IIRS_Error.php' ); // Error object. check for this return with IIRS_is_error( $ret )
 require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
@@ -63,7 +61,7 @@ $process_group      = $last_directory;                        // registration
 //useful URL bases for the various HREFs to IIRS content from the widget scenario
 //so that we can make more requests from the same domain
 global $IIRS_host_domain, $IIRS_user_ip, $IIRS_user_agent, $IIRS_HTTP_referer, $IIRS_host_TLD;
-global $IIRS_is_home_domain, $IIRS_is_dev_domain;
+global $IIRS_is_home_domain, $IIRS_is_dev_domain, $IIRS_is_live_domain;
 global $IIRS_domain_stem, $IIRS_URL_stem, $IIRS_URL_common_stem, $IIRS_URL_process_stem, $IIRS_URL_image_stem;
 $IIRS_host_domain      = $_SERVER['HTTP_HOST'];                     // blah.com $_SERVER PHP >= 4.1.0
 $IIRS_host_parts       = explode( '.', $IIRS_host_domain );
@@ -74,6 +72,7 @@ $IIRS_HTTP_referer     = (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFER
 $request_protocol      = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https' : 'http');
 $IIRS_is_home_domain   = ($IIRS_host_domain == 'transitionnetwork.org'); //live setup
 $IIRS_is_dev_domain    = ($IIRS_host_domain == 'tnv3.dev');              //debug settings only
+$IIRS_is_live_domain   = ( ! $IIRS_is_dev_domain );
 $IIRS_domain_stem      = "$request_protocol://$IIRS_host_domain";        // http://blah.com
 $IIRS_URL_stem         = "$IIRS_domain_stem/$plugin_directory";     // http://blah.com/IIRS
 $IIRS_URL_common_stem  = "$IIRS_URL_stem";                          // http://blah.com/IIRS
@@ -82,6 +81,8 @@ $IIRS_URL_image_stem   = "$IIRS_URL_stem/images";                   // http://bl
 
 //----------------------------------------------------------- debug
 $debug_environment .= "-------------- URL parse\n";
+$debug_environment .= "plugin_mode: $IIRS_plugin_mode\n";
+$debug_environment .= "widget_mode: $IIRS_widget_mode\n";
 $debug_environment .= "current_path: $current_path\n";
 $debug_environment .= "host_directory: $host_directory\n";
 $debug_environment .= "last_directory: $last_directory\n";
@@ -100,6 +101,7 @@ $debug_environment .= "filename: $filename\n";
 $debug_environment .= "\n";
 
 //----------------------------------------------------------- home server location
+//NOT_CURRENTLY_USED: superceeded by region_bias calculated from the TLD or overridden
 //for:
 //  country sensitive results when searching a TI's entered town location
 //  showing country context results in the TI lists
@@ -120,6 +122,7 @@ $whoIs_entries   = NULL;
 $language_domain = NULL;
 $server_country  = NULL;
 
+/*
 //------- 1) explicit host web-server location setting (plugin mode only)
 if (empty($server_country) && $IIRS_plugin_mode) {
   $server_country = IIRS_0_setting('server_country');
@@ -130,15 +133,13 @@ if (empty($server_country) && $IIRS_plugin_mode) {
 if (empty($server_country)) {
   $country_domain      = $IIRS_host_domain;
   if ($IIRS_widget_mode) {
-    $country_domain    = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).*/i', '$3', $IIRS_HTTP_referer);
+    $country_domain    = preg_replace('/^(https?:\/\/)?(www\.)?([^\/?]*).* /i', '$3', $IIRS_HTTP_referer);
   }
-  /*
   if ($whoIs_entries || ($whoIs_entries = IIRS_0_whois($country_domain))) {
     if     (in_array($whoIs_entries['Registrant Country'], $available_languages)) $server_country = $whoIs_entries['Registrant Country'];
     elseif (in_array($whoIs_entries['Admin Country'], $available_languages))      $server_country = $whoIs_entries['Admin Country'];
     elseif (in_array($whoIs_entries['Tech Country'], $available_languages))       $server_country = $whoIs_entries['Tech Country'];
   }
-  */
   if (!empty($server_country)) $debug_environment .= "2) host domain whois record: [$server_country]\n";
 }
 
@@ -152,6 +153,7 @@ if (empty($server_country)) {
 
 //------- 4) Unknown: admin message the installer to carry out (1)
 //TODO: server message to do (1)
+*/
 
 //----------------------------------------------------------- language selection
 //choose which language we want to present:

@@ -6,6 +6,8 @@
 ?>
 
 <?php
+global $location_array_not_specified;
+
 // -------------------------------------------------------------------- configuration
 $accept_website_address = IIRS_0_setting( 'accept_website_address' );
 $offer_buy_domains      = IIRS_0_setting( 'offer_buy_domains' );
@@ -26,6 +28,7 @@ if ( ! isset( $domain ) || empty( $domain ) ) $domain = $domain_other;
 
 if ( $location_value_serialised = IIRS_0_input( 'place' )) {
   $location_array        = unserialize( urldecode( $location_value_serialised ));
+  if ( $location_array == $location_array_not_specified )  IIRS_0_debug_print( 'location not specified' );
   $location_description  = $location_array['description'];
   $location_latitude     = $location_array['latitude'];
   $location_longitude    = $location_array['longitude'];

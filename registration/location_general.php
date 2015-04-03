@@ -3,6 +3,8 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
+
+//<title>Registration SCREEN #2</title>
 ?>
 
 <div id="IIRS_0_debug"><pre>
@@ -99,7 +101,8 @@ if ( $town_name ) {
     $no_towns_found_disabled       = 'disabled="1"';
     $no_towns_found_disabled_class = 'IIRS_0_disabled';
     IIRS_0_debug_print( "sending extra geocode fail message" );
-    new IIRS_Error( IIRS_GEOCODE_RESULTS_EMPTY, "No towns found for [$town_name]", "Geocode [$mapping_provider] returned zero results for [$town_name]", IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, NULL );
+    $non_fatal_error_email = "No towns found for [$town_name]"; //prevent the error appearing in the translations system
+    new IIRS_Error( IIRS_GEOCODE_RESULTS_EMPTY, $non_fatal_error_email, "Geocode [$mapping_provider] returned zero results for [$town_name]", IIRS_MESSAGE_EXTERNAL_SYSTEM_ERROR, NULL );
   }
 
   // ------------------------------------------------------------------------- check for already registered initiative_name
@@ -115,7 +118,7 @@ if ( $town_name ) {
     //   someone OWNS this name and you are not permitted to create an Initiative here.
     IIRS_0_debug_var_dump( $TI_same_name );
     $set_message_id = IIRS_TI_EXISTS_SAME_NAME;
-    $set_message    = IIRS_0_translation( 'The location is fine. However, the Initiative name already exists' );
+    $set_message    = IIRS_0_translation( 'We have found your town or area. However, the Initiative name already exists' );
     $set_message   .= " [$town_name]. ";
     $set_message   .= IIRS_0_translation( 'Please add something to the initiative name below to make it unique.' );
     $set_message   .= IIRS_0_translation( 'For Example:' );
@@ -159,55 +162,56 @@ if ( $town_name ) {
     IIRS_0_set_translated_error_message( $IIRS_error );
   } else {
   ?>
-    <?php if (trim(IIRS_0_translation( 'connection of' ) . IIRS_0_translation( 'to the support and innovation network' )) != '') { ?>
-      <div class="IIRS_0_h1" id="IIRS_0_popup_title"><?php IIRS_0_print_translated_HTML_text( 'connection of' ); IIRS_0_print_HTML_text( " $town_name " ); IIRS_0_print_translated_HTML_text( 'to the support and innovation network' ); ?> </div>
-    <?php } ?>
     <form method="POST" id="IIRS_0_form_popup_location_general" action="domain_selection" class="IIRS_0_clear IIRS_0_formPopupNavigate"><div>
       <?php IIRS_0_printEncodedPostParameters(); ?>
 
-      <h3><?php IIRS_0_print_translated_HTML_text( 'town matches' ); ?></h3>
+      <h3><?php IIRS_0_print_translated_HTML_text( 'We have found:' ); ?></h3>
       <?php if ( $towns_found ) print( IIRS_0_geocode_notice() ); ?>
       <ul id="IIRS_0_list_selector">
         <?php if ( ! $towns_found ) { ?>
-          <li class="IIRS_0_place IIRS_0_message">
-            <img src="<?php IIRS_0_print_HTML_image_src( "$IIRS_URL_image_stem/information" ); ?>" />
-            <?php
-              IIRS_0_print_translated_HTML_text( 'no towns found matching' );
-              IIRS_0_print_html_text( " $town_name. " );
-              IIRS_0_print_translated_HTML_text( 'you will need to email' );
-              IIRS_0_print_HTML( ' ' . IIRS_EMAIL_TEAM_LINK . ' ' );
-              IIRS_0_print_translated_HTML_text( 'to register by email because we cannot find your town on Google Maps!' );
-            ?>
+          <li class="IIRS_0_place" id="IIRS_0_no_geo_location">
+            <input name="place" class="IIRS_0_radio IIRS_0_required" value="<?php IIRS_0_print_HTML( urlencode( serialize( $location_array_not_specified ) ) ); ?>" type="radio" id="IIRS_0_location_1_input" />
+            <label class="IIRS_0_message IIRS_0_message_level_warning" for="IIRS_0_location_1_input">
+              <?php
+                IIRS_0_print_translated_HTML_text( "no towns found matching" );
+                IIRS_0_print_HTML_text( " $town_name. " );
+                IIRS_0_print_HTML( '<br/>' );
+                IIRS_0_print_translated_HTML_text( 'select this option to register without "geo-location"' );
+              ?>
+              <div class="IIRS_0_status"><?php
+                IIRS_0_print_translated_HTML_text( "this means that we won't know actually where your town is so it won't appear on the maps yet." );
+                IIRS_0_print_HTML_text( ' ' );
+                IIRS_0_print_translated_HTML_text( "we will contact you to resolve this, or you can type in another name below." );
+              ?></div>
+            </label>
           </li>
         <?php } ?>
         <?php IIRS_0_print_HTML( $location_options ); ?>
         <li id="IIRS_0_other" class="IIRS_0_place">
           <?php IIRS_0_print_translated_HTML_text( 'other' ); ?>:
           <input id="IIRS_0_research_town_name_new" value="<?php IIRS_0_print_HTML_form_value( $town_name ); ?>" />
-          <input id="IIRS_0_research" type="button" value="<?php IIRS_0_print_translated_HTML_text( 'search again' ); ?>" />
+          <input id="IIRS_0_research" type="button" value="<?php IIRS_0_print_translated_HTML_text( 'change the search' ); ?>" />
         </li>
       </ul>
 
-      <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_translated_HTML_text( 'some general details' ); ?></h3>
+      <h3 class="IIRS_0_horizontal_section"><?php IIRS_0_print_translated_HTML_text( 'registration of your Transition Initiative' ); ?></h3>
       <?php
         // show the message and continue
         if ( $set_message ) IIRS_0_set_message( $set_message_id, $set_message, NULL, IIRS_MESSAGE_USER_WARNING );
       ?>
-      <img id="IIRS_0_details_teaser_img" src="<?php IIRS_0_print_HTML_image_src( "$IIRS_URL_image_stem/network_paper" ); ?>" />
+      <div id="IIRS_0_details_teaser_img"><img src="<?php IIRS_0_print_HTML_image_src( "$IIRS_URL_image_stem/network_paper" ); ?>" /></div>
       <table id="IIRS_0_details">
-        <tr><td><?php IIRS_0_print_translated_HTML_text( 'initiative name' ); ?></td><td><input id="IIRS_0_initiative_name" <?php IIRS_0_print( $no_towns_found_disabled ); ?> class="IIRS_0_required <?php print( $duplicate_validation_issue ); ?>" name="initiative_name" value="<?php IIRS_0_print_HTML_form_value( $town_name ); ?>" /> <?php IIRS_0_print_translated_HTML_text( 'transition town' ); ?><span class="required">*</span></td></tr>
+        <tr><td><?php IIRS_0_print_translated_HTML_text( 'initiative name' ); ?></td><td><input id="IIRS_0_initiative_name" <?php IIRS_0_print( $no_towns_found_disabled ); ?> class="IIRS_0_required <?php print( $duplicate_validation_issue ); ?>" name="initiative_name" value="<?php IIRS_0_print_HTML_form_value( $town_name ); ?>" /> <?php IIRS_0_print_translated_HTML_text( 'Transition Initiative' ); ?><span class="required">*</span></td></tr>
         <tr><td><?php IIRS_0_print_translated_HTML_text( 'email' ); ?></td><td><input id="IIRS_0_email" <?php IIRS_0_print( $no_towns_found_disabled ); ?> class="IIRS_0_required" name="email" /><span class="required">*</span></td></tr>
         <tr><td><?php IIRS_0_print_translated_HTML_text( 'your name' ); ?></td><td><input id="IIRS_0_name" <?php IIRS_0_print( $no_towns_found_disabled ); ?> class="IIRS_0_required" name="name" /><span class="required">*</span></td></tr>
         <!-- NOTE: are we going to ring them? place this later on in the forms -->
         <!-- tr><td><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'phone number' ); ?><br/>( <?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'optional' ); ?> )</td><td><input name="phone" /></td></tr -->
       </table>
       <div id="IIRS_0_details_teaser">
-        <?php IIRS_0_print_translated_HTML_text( 'registering your email means that local people will contact you to offer support and for your opinion on projects like food growing, energy supply and other Transition ideals. we will let your nearest advanced Transition Town know you have registered so they can connect, support, encourage and share! : )' ); ?>
+        <?php IIRS_0_print_translated_HTML_text( 'This email address may be used by people in your area who would like to contact you and / or join your projects.' ); ?>
       </div>
 
       <br class="IIRS_0_clear" />
-      <input class="IIRS_0_bigbutton IIRS_0_back" type="button" value="&lt;&lt; <?php IIRS_0_print_translated_HTML_text( 'change search' ); ?>" />
-
       <?php
         /* this is the submit button for the initial POST data in to the IIRS database
          * we are creating several buttons and hiding one of them to prevent robots from clicking anything
@@ -218,7 +222,7 @@ if ( $town_name ) {
         print( $false_submit_HTML );
         print( $false_submit_HTML );
         print( $false_submit_HTML );
-        print( "<input name=\"submit\" type=\"submit\" $no_towns_found_disabled class=\"IIRS_0_bigbutton $no_towns_found_disabled_class \" value=\"" . IIRS_0_translation( 'complete registration' ) . " &gt;&gt;\" />" );
+        print( "<input name=\"submit\" type=\"submit\" $no_towns_found_disabled class=\"IIRS_0_bigbutton $no_towns_found_disabled_class \" value=\"" . IIRS_0_translation( 'join network' ) . " &gt;&gt;\" />" );
         print( $false_submit_HTML );
         print( $false_submit_HTML );
       ?>

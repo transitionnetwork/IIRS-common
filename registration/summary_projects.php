@@ -3,6 +3,8 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
+
+//<title>Registration SCREEN #4</title>
 ?>
 
 <div id="IIRS_0_debug"><pre>
@@ -67,7 +69,7 @@ if ( $domain_entered ) {
     } else IIRS_0_debug_print("aboutus attemps all returned blank strings or [404] errors.");
     error_reporting($old_error_reporting);
   } else { // $valid_dns
-    $IIRS_error = new IIRS_Error( IIRS_INVALID_WEBSITE_DNS, 'Your website was not found, please re-enter it or select none', 'DNS lookup failed', IIRS_MESSAGE_USER_WARNING, IIRS_MESSAGE_NO_USER_ACTION, array( '$domain' => $domain ) );
+    $IIRS_error = new IIRS_Error( IIRS_INVALID_WEBSITE_DNS, 'Your website was not found, please re-enter it or select "No Website"', 'DNS lookup failed', IIRS_MESSAGE_USER_WARNING, IIRS_MESSAGE_NO_USER_ACTION, array( '$domain' => $domain ) );
     IIRS_0_debug_print( $IIRS_error );
   }
 } else { // $domain_entered
@@ -125,7 +127,6 @@ if ( $domain_entered ) {
       // IIRS_0_set_translated_error_message( ... ) uses IIRS_0_set_message( ... )
       IIRS_0_set_translated_error_message( $IIRS_error );
   } else { ?>
-    <div class="IIRS_0_h1" id="IIRS_0_popup_title"><?php IIRS_0_print_translated_HTML_text('add ideas, summary, projects, descriptions so everyone can help and get advice'); ?></div>
     <form method="POST" id="IIRS_0_form_popup_summary_projects" action="finished" class="IIRS_0_clear IIRS_0_formPopupNavigate"><div>
       <?php IIRS_0_printEncodedPostParameters(); ?>
 
@@ -141,7 +142,7 @@ if ( $domain_entered ) {
 
       <div class="IIRS_0_horizontal_section">
         <input class="IIRS_0_bigbutton IIRS_0_back" type="button" value="&lt;&lt; <?php IIRS_0_print_translated_HTML_text('back'); ?>" />
-        <input class="IIRS_0_bigbutton" type="submit" value="<?php IIRS_0_print_translated_HTML_text('save and continue'); ?> &gt;&gt;" />
+        <input class="IIRS_0_bigbutton" type="submit" value="<?php IIRS_0_print_translated_HTML_text('complete registration'); ?> &gt;&gt;" />
       </div>
     </form>
 
@@ -154,7 +155,7 @@ if ( $domain_entered ) {
         </table>
         <div id="IIRS_0_details_teaser">
           <img src="<?php IIRS_0_print_HTML_image_src( "$imageURLStem/network_paper" ); ?>" />
-          <?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'Your nearest Transition Town is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)'); ?>
+          <?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'Your nearest Transition Initiative is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)'); ?>
         </div>
 
         <input disabled="1" class="IIRS_0_bigbutton" type="button" value="<?php IIRS_0_print_translated_HTML_text(IGNORE_TRANSLATION, 'add another thing'); ?>" />

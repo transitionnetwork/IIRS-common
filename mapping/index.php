@@ -3,6 +3,8 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
+
+//<title>MAPPING SCREEN</title>
 ?>
 
 <div id="IIRS_0_debug"><pre>
@@ -14,19 +16,19 @@ require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );
 require_once( IIRS__COMMON_DIR . 'environment.php' );
 IIRS_0_debug_print( $debug_environment );
 
-$all_TIs = IIRS_0_TIs_all(); ?>;
+$all_TIs = IIRS_0_TIs_all();
 ?>
 </pre></div>
 
 <div id="IIRS_0">
   <div class="IIRS_0_no_javascript IIRS_0_message IIRS_0_message_level_warning">
-    <?php IIRS_0_print_translated_HTML_text( 'oops, Javascript failed to run, services unavailable, please go to' ); ?>
+    <?php IIRS_0_print_translated_HTML_text( 'Oops, Javascript failed to run, services unavailable, please go to' ); ?>
     &nbsp;<a href="http://transitionnetwork.org/">Transition Network</a>&nbsp;
     <?php IIRS_0_print_translated_HTML_text( 'to register instead' ); ?>
   </div>
 
   <!-- intial form -->
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( 'mappings of transition towns around the world' ); ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( 'map of Transition Initiatives near you' ); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
   <div class="IIRS_0_map IIRS_0_fit_bounds">

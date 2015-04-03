@@ -77,7 +77,9 @@ body .IIRS_0_disabled {
 }
 #IIRS_0_list_selector .IIRS_0_message {
   padding-left:42px;
-  border-bottom:none;
+  border:none;
+  background-position:12px 6px;
+  background-color:Transparent;
 }
 #IIRS_0_list_selector li .IIRS_0_radio {
   min-height:70px;
@@ -193,6 +195,9 @@ body #IIRS_0_list_selector .IIRS_0_button {
 }
 .IIRS_0_float_right {
   float:right;
+}
+.IIRS_0_float_left {
+  float:left;
 }
 .IIRS_0_horizontal_section {
   width:100%;

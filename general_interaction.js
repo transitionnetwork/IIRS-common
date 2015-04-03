@@ -46,20 +46,25 @@ function IIRS_0_showMaps() {
 
     // markers
     jMarkers.each(function(){
-      var jTI         = jQuery(this);
-      var fLatitude   = jTI.children(".location_latitude").text();
-      var fLongitude  = jTI.children(".location_longitude").text();
-      var sName       = jTI.children(".name").text();
-      var sImage      = g_sIIRSURLImageStem + "/" + (jTI.children(".status").text() == "official" ? "official" : "muller") + ".png";
-      var oLatLng     = new google.maps.LatLng(fLatitude, fLongitude);
-      var oMarker     = new google.maps.Marker({
+      var jTI            = jQuery(this);
+      var fLatitude      = jTI.children(".location_latitude").text();
+      var fLongitude     = jTI.children(".location_longitude").text();
+      var sName          = jTI.children(".name").text();
+      var sStatus        = jTI.children(".status").text();
+      var sCustomMarker  = jTI.children(".custom_marker").text();
+      //TODO: categories of TI and associated markers (same name as category)
+      var sDefaultMarker = (sStatus == "official" ? "official" : "muller");
+      var sMarkerName    = (sCustomMarker ? sCustomMarker : sDefaultMarker);
+      var sImage         = g_sIIRSURLImageStem + "/" + sMarkerName + ".png";
+      var oLatLng        = new google.maps.LatLng(fLatitude, fLongitude);
+      var oMarker        = new google.maps.Marker({
         position: oLatLng,
         map:      oMap,
         title:    sName,
         icon:     sImage
       });
       var oInfoWindow = new google.maps.InfoWindow({
-        content: '<div id=\"content\"><b><a href="/IIRS/view?ID=' + (jTI.children(".native_ID").text()) + '">' + sName + '</a></b></p></div>'
+        content: '<div id=\"content\"><b>' + sName + '</b><br/><a href="/IIRS/view?ID=' + (jTI.children(".native_ID").text()) + '">' + g_tViewFullProfile + '</a></p></div>'
       });
       google.maps.event.addListener(oMarker, "click", function() {
         if (oCurrentInfoWindow) oCurrentInfoWindow.close();

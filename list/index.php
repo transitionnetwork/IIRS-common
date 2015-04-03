@@ -3,6 +3,8 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
+
+//<title>LIST SCREEN</title>
 ?>
 
 <div id="IIRS_0_debug"><pre>
@@ -35,7 +37,7 @@ $usersTI = IIRS_0_details_TI_user();
     body .entry-meta {display:block;}
   </style>
 
-  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'list of transition towns around the world' ); ?>
+  <div class="IIRS_0_h1"><?php IIRS_0_print_translated_HTML_text( IGNORE_TRANSLATION, 'list of Transition Initiative around the world' ); ?>
     <?php IIRS_0_print_language_selector(); ?>
   </div>
 

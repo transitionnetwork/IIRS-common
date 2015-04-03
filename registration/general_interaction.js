@@ -51,6 +51,9 @@ function IIRS_0_attachRegistrationInteractionEvents() {
     e.preventDefault();
     e.stopPropagation();
   });
+  jQuery("#IIRS_0_no_geo_location").on("click", function(){
+    jQuery("#IIRS_0_form_popup_location_general input").removeAttr("disabled").removeClass("IIRS_0_disabled");
+  });
 
   //----------------------------- auto-fill name from email
   oNameInput  = jQuery("#IIRS_0_name");

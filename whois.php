@@ -3,9 +3,7 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
-?>
 
-<?php
 function IIRS_0_whois($domain) {
   $aAssocEntries = NULL;
 
@@ -25,7 +23,7 @@ function IIRS_0_whois($domain) {
     // Error?
     // array(1) { ["Error"] => string(54) " No appropriate Whois server found for abc.com domain!" }
     if ( count( $aAssocEntries ) == 1 && isset( $aAssocEntries['Error'] ) ) {
-      // IIRS_0_translation( 'Could not find extended information about your website' )
+      // IIRS_0_translation(IGNORE_TRANSLATION, 'Could not find extended information about your website' )
       $message        = 'Could not find extended information about your website';
       $message_detail = $aAssocEntries['Error'];
       if ( $message_detail == "No appropriate Whois server found for $domain domain!" ) {

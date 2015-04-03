@@ -3,9 +3,7 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
-?>
 
-<?php
 // --------------------------------------------- SECURITY: escaping
 // TODO: move all these in to a separate SECURITY file
 function IIRS_0_htmlentities( $string ) {
