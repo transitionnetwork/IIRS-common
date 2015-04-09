@@ -81,7 +81,10 @@ function IIRS_0_showMaps() {
     });
 
     if (bFitBounds) {
-      if (window.console) console.log(oLatLngBounds);
+      if (window.console) {
+        console.info("fit bounds...");
+        console.log(oLatLngBounds);
+      }
       oNE = oLatLngBounds.getNorthEast();
       oSW = oLatLngBounds.getSouthWest();
       iHeightDegrees = oNE.lat() - oSW.lat();
@@ -90,9 +93,11 @@ function IIRS_0_showMaps() {
       if (iMaxDegrees > 8) {
         // the initiatives being shown span more than 8 degrees of the planet surface
         // so show the whole area
+        console.info("bounds are more than 8 degrees so showing whole area");
         oMap.fitBounds(oLatLngBounds);
       } else {
         // initiatives are in a small area, so show the whole country
+        console.info("bounds are less than 8 degrees so showing zoom 5");
         oMap.setCenter(oLatLngBounds.getCenter());
         oMap.setZoom(5);
       }

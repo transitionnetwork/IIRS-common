@@ -4,6 +4,11 @@
  * as detailed in the COPYING file included in the root of this plugin
  */
 
+if ($_SERVER['HTTP_HOST'] !== 'tnv3.dev') {
+  print('development only tool');
+  exit(0);
+}
+
 // view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translated_HTML_text
 $default_start_directory = $_SERVER["DOCUMENT_ROOT"] . "/wp-content/plugins/IIRS";
 $start_directory         = (isset($_GET['start_directory']) ? $_GET['start_directory'] : $default_start_directory );

@@ -3,9 +3,7 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
-?>
 
-<?php
 global $debug_environment;
 require_once( IIRS__COMMON_DIR . 'utility.php' );
 require_once( IIRS__COMMON_DIR . 'framework_abstraction_layer.php' );

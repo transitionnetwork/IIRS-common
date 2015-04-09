@@ -3,9 +3,12 @@
  * This program is distributed under the terms of the GNU General Public License
  * as detailed in the COPYING file included in the root of this plugin
  */
-?>
 
-<?php
+if ($_SERVER['HTTP_HOST'] !== 'tnv3.dev') {
+  print('development only tool');
+  exit(0);
+}
+
 // view-source:tnv3.dev/wp-content/plugins/IIRS/IIRS_common/read_translations.php?format=po&start_directory=/var/www/wordpress/tnv3/wp-content/plugins/IIRS_0_print_translated_HTML_text
 $start_directory    = ( isset($_GET['start_directory']) ? $_GET['start_directory'] : dirname(__FILE__) );
 $fix_file           = ( $_GET['fix_file'] );
