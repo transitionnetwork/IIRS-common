@@ -136,15 +136,15 @@ if ( $towns_searched_for ) {
     <form action="index" class="IIRS_0_clear IIRS_0_formPopupNavigate" method="POST">
       <h2><?php IIRS_0_print_translated_HTML_text( 'your details' ); ?>:</h2>
       <div id="IIRS_0_name" class="IIRS_0_formfield">
-        <label id="IIRS_0_name_label" class="IIRS_0_disabled">name:</label>
+        <label id="IIRS_0_name_label" class="IIRS_0_disabled"><?php IIRS_0_print_translated_HTML_text( 'your name' ); ?></label>
         <input id="IIRS_0_name_input" class="IIRS_0_disabled" disabled="1" type="text" name="name" value="<?php IIRS_0_print_HTML_form_value( $name ); ?>" />
       </div>
       <div id="IIRS_0_email" class="IIRS_0_formfield">
-        <label id="IIRS_0_email_label">email:</label>
+        <label id="IIRS_0_email_label"><?php IIRS_0_print_translated_HTML_text( 'email' ); ?></label>
         <input id="IIRS_0_email_input" type="text" name="email" value="<?php IIRS_0_print_HTML_form_value( $email ); ?>" />
       </div>
       <div id="IIRS_0_password" class="IIRS_0_formfield">
-        <label id="IIRS_0_password_label">password:</label>
+        <label id="IIRS_0_password_label"><?php IIRS_0_print_translated_HTML_text( 'password' ); ?></label>
         <input id="IIRS_0_password_input" type="password" name="pass" value="<?php IIRS_0_print_HTML_form_value( IIRS_0_CLEAR_PASSWORD ); ?>" />
       </div>
       <input type="hidden" name="form" value="update account details" />
@@ -154,11 +154,11 @@ if ( $towns_searched_for ) {
     <form action="index" class="IIRS_0_clear IIRS_0_formPopupNavigate" method="POST">
       <h2><?php IIRS_0_print_translated_HTML_text( 'transition initiative details' ); ?>:</h2>
       <div id="IIRS_0_initiative_name" class="IIRS_0_formfield">
-        <label id="IIRS_0_initiative_name_label">initiative name:</label>
+        <label id="IIRS_0_initiative_name_label"><?php IIRS_0_print_translated_HTML_text( 'initiative name' ); ?></label>
         <input id="IIRS_0_initiative_name_input" type="text" name="initiative_name" value="<?php IIRS_0_print_HTML_form_value( $initiative_name ); ?>" />
       </div>
       <div id="IIRS_0_domain" class="IIRS_0_formfield">
-        <label id="IIRS_0_domain_label">domain:</label>
+        <label id="IIRS_0_domain_label"><?php IIRS_0_print_translated_HTML_text( 'website' ); ?></label>
         <input id="IIRS_0_domain_input" type="text" name="domain" value="<?php IIRS_0_print_HTML_form_value( $domain ); ?>" />
       </div>
 
@@ -178,7 +178,7 @@ if ( $towns_searched_for ) {
       </ul>
 
       <div id="IIRS_0_summary" class="IIRS_0_formfield">
-        <label id="IIRS_0_summary_label">summary:</label>
+        <label id="IIRS_0_summary_label"><?php IIRS_0_print_translated_HTML_text( 'summary' ); ?></label>
         <?php IIRS_0_HTML_editor($summary, 'summary'); ?>
       </div>
 

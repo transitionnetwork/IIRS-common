@@ -7,14 +7,15 @@
 //<title>Registration SCREEN #2</title>
 
 global $location_is_example, $mapping_provider, $location_array_not_specified;
+$not_specified = IIRS_0_translation( "not-specified" );
 $location_array_not_specified = array(
-  'description'  => "not-specified",
+  'description'  => $not_specified,
   'latitude'     => "0",
   'longitude'    => "0",
-  'full_address' => "not-specified",
-  'country'      => "not-specified",
-  'granuality'   => "not-specified",
-  'bounds'       => "not-specified",
+  'full_address' => $not_specified,
+  'country'      => $not_specified,
+  'granuality'   => $not_specified,
+  'bounds'       => $not_specified,
 );
 $mapping_provider    = 'mapquest';
 $location_is_example = ( isset( $town_name ) && substr( $town_name, 0, 7 ) == 'example' );

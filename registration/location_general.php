@@ -227,7 +227,7 @@ if ( $town_name ) {
         print( $false_submit_HTML );
       ?>
 
-      <?php IIRS_0_print_translated_HTML_text( 'and then connect with local Transition Initiatives : )' ); ?>
+      <?php IIRS_0_print_translated_HTML_text( 'and then connect with local Transition Initiatives :)' ); ?>
     </div></form>
   <?php } ?>
 </div>
