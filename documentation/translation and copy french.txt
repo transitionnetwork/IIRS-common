@@ -1,0 +1,340 @@
+TRANSLATION INTRODUCTION (not for translation): ---------------------------------------------------------------------------------------------
+REGISTRATION PROCESS SCREEN SUMMARY #x:
+  #1 = town name widget (WIDGET, NOT A "SCREEN")
+  #2 = location results screen
+  #3 = website selection screen
+  #4 = summary entry screen
+
+[] indicates a translation
+WAS: indicates a previous, rejected, alternative translation.
+everything in CAPITALS does not need translation
+
+TO TRANSLATE (in order of appearance): ---------------------------------------------------------------------------------------------
+REGISTRATION PROCESS:
+  IIRS registration
+    English: registration of your initiative
+    [Formulaire d’inscription de votre initiative]
+      WAS: [Inscription IIRS]
+    page title on all registration SCREENs
+
+SCREEN #1 (initial widget / shortcode / town name entry):
+  register your transition town
+    [Vous pouvez inscrire ici votre initiative de transition]
+      WAS: [Enregistrez votre ville en Transition]
+  town or area
+    [ville ou région]
+      WAS; [Localité]
+    gray in-field help text
+  what is a Transition Town?
+    [qu'est-ce qu'une Initiative de Transition?]
+  http://www.transitionnetwork.org/support/becoming-official#criteria
+    OPTIONAL: change this to a URL that explains what a transition town is
+  (why register link. format: http://[web address] [link text])
+    this link will appear under the "what is a transtion town?" link
+    it's value is complex, e.g. "http://what.com Why Register?" produces a link to http://what.com with the text Why Register?
+    [Pourquoi s'inscrire?]
+    [LINK????]
+  connect to the Transition Network and advertise yourself on our website.
+    [connectez-vous au réseau des initiatives de Transition et faites-vous connaître via notre site!]
+      WAS: [Entrez en contact avec d'autres villes en Transition, rendez-vous visite, amusez-vous !]
+    validation
+  register (>>)
+    [inscrivez-vous]
+      WAS: [Envoyer]
+    BUTTON
+
+SCREEN #2 (location matches and basic profile)
+  We have found:
+    [Nous avons trouvé :]
+      WAS: [Recherche de la localité]
+  registration of your Transition Initiative
+    [inscription de votre initiative de transition]
+      WAS: [quelques informations générales]
+  initiative name
+    [nom de l'initiative]
+      WAS: [le nom de l'initiative]
+  Transition Initiative
+    [en transition]
+      WAS: [Ville en Transition]
+    at the end of the "initiative name" field
+  your name
+    [votre nom et prénom]
+      WAS: [votre nom]
+  email
+    [email]
+  Transition Initiative not registered yet!
+    [Votre initiative de Transition n'est pas inscrite!]
+  Oops, it seems that the our servers are not responding! The manager has been informed and is trying to solve the problem. Please come back here tomorrow :)
+    [Aïe, il semblerait que le serveur ne réponde pas ! Le responsable a été prévenu et tente de résoudre le problème. Repassez par ici demain :)]
+    this only happens if the Google Maps service is un-available
+  email address not valid format
+    [le format de l'adresse email n'est pas valable]
+    validation
+  form not valid
+    [le formulaire n'est pas valable]
+    validation
+  change the search
+    [modifier la recherche]
+    in the location results at bottom for changing the town name search term
+  This email address may be used by people in your area who would like to contact you and / or join your projects.
+    [Cet e-mail pourra être utilisé par des personnes de votre région qui souhaiteraient entrer en contact avec vous et/ou rejoindre vos projets.]
+      WAS: [En enregistrant votre adresse email, d'autres personnes près de chez vous pourront vous contacter pour vous proposer de l'aide ou pour avoir votre avis sur des projets de potager, d'approvisionnement énergétique ou autres idées de la Transition. Nous allons transmettre vos informations à la ville en Transition la plus proche pour que vous puissiez entrer en contact, vous aider, vous encourager et partager ! :)]
+    raison d'etre
+  There is already a user with this email or username. Please try again.
+    [Un utilisateur possède déjà cette adresse email ou cet identifiant. Veuillez réessayer.]
+    validation
+    this should be changed to "... It is probably you no? and you need a password reminder?"
+    [Avez-vous oublié votre mot de passe?]
+  We have found your town or area. However, the Initiative name already exists. Please add something to the initiative name below to make it unique. For Example: [west%%town_name%%] or [energy_subgroup_%%town_name%%].
+    [Nous avons bien trouvé votre ville ou région. Toutefois, il existe déjà une initiative de Transition portant le nom [Paris]. Veuillez ajouter quelque chose au nom de l'initiative pour le rendre unique. Par exemple : [Paris ouest] ou [groupe énergie Paris].]
+      WAS: [Nous avons bien trouvé votre ville ou région. Toutefois, il existe déjà une initiative portant ce nom.]
+    validation
+  this looks like a domain ( website address ), you need to enter a town or area name instead
+    [ceci ressemble à un domaine (adresse de site internet). Nous vous demandons d'entrer ici le nom d'une ville ou d'une région]
+    validation
+  no towns found matching
+    [aucune ville ne correspond à la recherche]
+    validation
+  select this option to register without "geo-location". this means that we won't know actually where your town is so it won't appear on the maps yet. we will contact you to resolve this, or you can type in another name below.  view on map
+    NEWISH functionality...
+  view on map
+    [voir sur la carte]
+      WAS: [Voyez sur la carte]
+  join network (>>)
+    [rejoignez le réseau]
+      WAS: [Confirmer l'inscription]
+    BUTTON
+  and then connect with local Transition Initiatives : )
+    [et connectez-vous au réseau des initiatives locales de Transition :)]
+      WAS: [Et connectez vous au réseau transition et aux autres initiatives de transition : )]
+    next to the Button
+
+SCREEN #3 (website list and selection):
+  you are now registered. %townname% is go!
+    [votre initiative a bien été enregistrée. Bienvenue, %townname%!]
+    registration confirmation message
+  website selection
+    Here are the websites we have found that might correspond to your initiative. We invite you to select one; complete the "other" field or choose the option "no wesbite"
+    [Voici les sites internet que nous avons trouvés et qui pourraient correspondre à votre initiative. Nous vous invitons à sélectionner le vôtre, à compléter la case "autre" ou à choisir l'option "pas de site internet"]
+  other
+    [autre]
+    this label only appears if there are MATCHES for the TIs potential domains
+    i.e. if the possible website list has content then this appears next to the other box
+  your website
+    [votre site internet]
+    this label only appears if there are NO MATCHES for the TIs potential domains
+    i.e. if the possible website list is empty then only this appears next to the other box
+  view in new window
+    [ouvrir dans une nouvelle fenêtre]
+    link on each listed website option to go to the website in a new window
+  no website
+    [pas de site internet]
+  we do not currently have a website
+    [nous n'avons actuellement pas de site internet]
+  Oops, Could not create your user account because of a system error. The manager has been informed and is trying to solve the problem. Please try again tomorrow.
+    [Aïe, il est impossible de créer un compte d'utilisateur à cause d'une erreur du système. Le responsable a été prévenu et tente de résoudre le problème. Repassez par ici demain :)]
+  Akismet thinks that your entry is SPAM. So we cannot accept it. Sorry.
+    [Akismet considère qu'il s'agit d'un SPAM que nous ne pouvons pas accepter. Désolé.]
+    validation
+  Failed to check the entries against the Akismet SPAM database. Please try again tomorrow :)
+    [Impossible de vérifier ces informations dans la base de données SPAM Akismet. Repassez par ici demain :)]
+    validation
+  We think you are a SPAM robot. please email us to resolve this issue.
+    [Notre système considère que vous êtes un robot spammeur. Nous vous invitons à nous envoyer un email pour résoudre le problème.]
+    validation
+  a website selection option is required
+    [il est nécessaire de cocher une des options]
+    validation
+  You have already registered a Transition Initiative under this username. Please logout and re-register
+    [Vous avez déjà enregistré une initiative de Transition avec cet identifiant. Nous vous invitons à vous déconnecter pour pouvoir continuer l'inscription]
+    validation
+  A Transition Initiative already exists with this name. Please add something to the name or change it and try again
+    [Oh, il existe déjà une initiative de Transition avec le même nom! Nous vous invitons à compléter ou à modifier le nom de votre initiative avant de réessayer]
+    validation
+  Oops, we didn't recieve your data. Please try again
+    [Oups, nous n'avons pas reçu vos données. Veuillez réessayer]
+    usually only web robots get this message. it is a system error
+    validation
+  save and continue (>>)
+    [sauvegardez et continuez]
+    BUTTON
+
+SCREEN #4 (summary entry):
+  summary
+    [présentation de votre initiative de transition]
+      WAS: [résumé]
+  Your website was not found, please re-enter it or select "No Website".
+    [Nous n'avons pas trouvé votre site internet. Nous vous invitons à réécrire l'adresse ou à cocher la case "Pas de site internet"]
+    validation
+  from the website
+    [du site internet]
+    indicates that the summary has been initially filled out from the "about us" section on the associated website
+  complete registration (>>)
+    [terminez l'inscription]
+      WAS: [Terminez le profil]
+    BUTTON
+    this is the last data-entry screen: system will redirect to a full view of the created profile when pressed
+
+REGISTRATION EMAIL
+  TransitionTowns registration service
+    [Service d'inscription des Villes en Transition]
+    the email "from" name
+  your new Transition account
+    [votre nouveau compte Transition]
+    email subject
+  welcome to Transition
+    [bienvenue dans la Transition]
+    in-email body title
+  here are your registration details
+    [voici les détails de votre inscription]
+  username
+    [identifiant]
+  password
+    [mot de passe]
+  reply to this email with any thoughts / excitement / ideas / congratulations / bugs / other things :)
+    [n'hésitez par à répondre à cet email afin de nous faire profiter de vos réflexions, idées, envies, félicitations, critiques et autres! :)]
+
+ADMINISTRATION EMAIL (administrator only):
+  [IIRS Admin notice] new Transition account registered
+    [Enregistrement d'un nouveau compte Transition]
+    email subject
+    (remainder of the email is identical to the user regiatration email)
+
+ADMINISTRATION INTERFACE (administrator only):
+  No initiatives found in Trash.
+  No initiatives found.
+  Add New
+  IIRS import
+    page title
+  IIRS export
+    page title
+
+
+OTHER SCREENS ------------------------------------------------------------------
+LIST SCREEN:
+  view
+    link text next to TI posts to go to the full profile view screen
+    only necessary to translate if the IRS is controlling the list of TIs
+  edit
+    [modifier]
+    link text next to TI posts to go to the edit screen
+    appears only next to TIs that are owned by the current user
+    only necessary to translate if the IRS is controlling the list of TIs
+
+FULL PROFILE SCREEN:
+  IIRS view
+    [Vue IIRS]
+    page title
+  website
+    [site internet]
+    "website" link (if there is one)
+  currently no website
+    [nous n'avons actuellement pas de site internet]
+
+MAPPING:
+  IIRS mapping
+    [Carte IIRS]
+    page title
+  view full profile
+    [voir le profil complet]
+    marker link text
+  map of Transition Initiatives near you
+    [liste des villes en Transition près de chez vous]
+      WAS:[Carte des initiatives de Transition près de chez vous]
+
+EDIT SCREEN:
+  IIRS edit
+    page title
+  setup editor
+    in-page title
+  your details
+    [vos informations]
+  update account details
+    [mettre à jour les informations du compte]
+  transition initiative details
+    [informations sur l'initiative de Transition]
+  change location
+    [modifier le lieu]
+  update transition initiative
+    [mettre à jour l'initiative de Transition]
+  login required to edit
+    [il est nécessaire de s'identifier pour pouvoir modifier]
+  There is no Initiative associated with this user
+    [il n'y a pas d'initiative associée à cet utilisateur]
+  you will need to email %EMAIL% to register instead
+    [pour vous inscrire, nous vous invitons à envoyer un email à %EMAIL% []
+    validation
+  Login Failed
+    [La tentative d'identification a échoué]
+    validation
+  Failed to update your user details. Please try again tomorrow.
+    [Aïe, il est impossible de mettre à jour vos informations d'utilisateur. Le responsable a été prévenu et tente de résoudre le problème. Repassez par ici demain :)]
+    validation
+  no towns found matching %%townname%% you will need to register by email because we cannot find your town on our maps system!
+    [Nous vous invitons à vous enregistrer par email car nous n'avons pas trouvé votre ville sur la carte!]
+    validation
+
+
+GENERAL and MISC ------------------------------------------------------------------
+Oops, Javascript failed to run, services unavailable, please go to
+  [Oups, Javascript ne fonctionne pas, service indisponible. Veuillez envoyer un email à]
+  we should add an email address to this and ask them to email us?
+registrar@transitionnetwork.org
+  this is the email where error messages will go
+  translate to change!
+system error
+  [erreur système]
+  validation
+(<<) back
+  [retour]
+  validation
+  back button in the case of errors
+nice_tlds
+  this is a semi colon delimited list of Top Level Domains to search when looking for possible websites
+  see the IIRS settings screen for more information
+nice_domains
+  this is a semi colon delimited list of domain prefixes to search when looking for possible websites
+  see the IIRS settings screen for more information
+
+NOT CURRENTLY USED (do not translate now) ------------------------------------------------------------------
+  Could not find extended information about your website
+  search the transition towns of the world
+  add another thing
+  Your nearest Transition Town is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)
+  description of thing
+  name of thing
+  project or idea thing
+  or upload
+  Loading Google images for
+  image
+  thankyou message
+  thanks
+    [Merci :)]
+  buy marked domains
+  stop being clever and just give me the domains
+  on to this domain and give me the keys
+  load
+  advanced settings
+  km
+  closest initiative
+  search
+  setup editor
+  message
+  join!
+  transition initiative already registered
+  phone number
+  to register by email because we cannot find your town on Google Maps!
+    [Pour s'enregistrer par email. Entrez le nom de votre site internet ci-dessous si vous en avez un.]
+  to manage your registration, NOT this website
+  you will need to log in to
+  finish
+  IIRS search
+    [Recherche IIRS]
+    page title
+  IIRS list
+    [Liste IIRS]
+    page title
+  Could not logout and delete the current user because no current user was found to allow re-addtion. This might cause problems when trying again
+    TESTING ONLY: only relevant for testing scenario
+  Could not delete the recently added user to allow re-addtion
+    TESTING ONLY: only relevant for testing scenario

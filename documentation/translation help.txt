@@ -1,0 +1,240 @@
+TRANSLATION INTRODUCTION (not for translation): ---------------------------------------------------------------------------------------------
+REGISTRATION PROCESS SCREEN SUMMARY #x:
+  #1 = town name widget (WIDGET, NOT A "SCREEN")
+  #2 = location results screen
+  #3 = website selection screen
+  #4 = summary entry screen
+
+TO TRANSLATE (in order of appearance): ---------------------------------------------------------------------------------------------
+REGISTRATION PROCESS:
+  IIRS registration
+    English translation: registration of your initiative
+    page title on all registration SCREENs
+
+SCREEN #1 (initial widget / shortcode / town name entry):
+  register your transition town
+  town or area
+    gray in-field help text
+  what is a Transition Town?
+  http://www.transitionnetwork.org/support/becoming-official#criteria
+    OPTIONAL: change this to a URL that explains what a transition town is
+  (why register link. format: http://[web address] [link text])
+    this link will appear under the "what is a transtion town?" link
+    it's value is complex, e.g. "http://what.com Why Register?" produces a link to http://what.com with the text Why Register?
+  connect to the Transition Network and advertise yourself on our website.
+    validation
+  register (>>)
+    BUTTON
+
+SCREEN #2 (location matches and basic profile)
+  We have found:
+    WAS: town matches
+    CHANGE TO: towns found?
+  registration of your Transition Initiative
+    WAS: some general details
+  optional
+  initiative name
+  transition town
+    at the end of the "initiative name" field
+  your name
+  email
+  Transition Initiative not registered yet!
+  Oops, it seems that the our servers are not responding! The manager has been informed and is trying to solve the problem. Please come back here tomorrow :)
+    this only happens if the Google Maps service is un-available
+  email address not valid format
+    validation
+  form not valid
+    validation
+  change the search
+    in the location results at bottom for changing the town name search term
+  This email address may be used by people in your area who would like to contact you and / or join your projects.
+    raison d'etre
+  There is already a user with this email or username. Please try again.
+    validation
+    this should be changed to "... It is probably you no? and you need a password reminder?"
+  you will need to email %EMAIL% to register instead
+    validation
+  The location is fine. However, the Initiative name already exists. Please add something to the initiative name below to make it unique. For Example: [west%%town_name%%] or [energy_subgroup_%%town_name%%].
+    validation
+  this looks like a domain ( website address ), you need to enter a town or area name instead
+    validation
+  no towns found matching
+    validation
+  select this option to register without "geo-location". this means that we won't know actually where your town is so it won't appear on the maps yet. we will contact you to resolve this, or you can type in another name below.  view on map
+    NEWISH functionality...
+  join network (>>)
+    BUTTON
+  and then connect with local Transition Initiatives : )
+    next to the Button
+
+SCREEN #3 (website list and selection):
+  you are now registered. %townname% is go!
+    registration confirmation message
+  website selection
+    top paragraph on website selection screen
+  other
+    this label only appears if there are MATCHES for the TIs potential domains
+    i.e. if the possible website list has content then this appears next to the other box
+  your website
+    this label only appears if there are NO MATCHES for the TIs potential domains
+    i.e. if the possible website list is empty then only this appears next to the other box
+  view in new window
+    link on each listed website option to go to the website in a new window
+  no website
+  we do not currently have a website
+  Oops, Could not create your user account because of a system error. Please try again tomorrow.
+  There is already a user with this email or username. Please try again.
+  Akismet thinks that your entry is SPAM. So we cannot accept it. Sorry.
+    validation
+  Failed to check the entries against the Akismet SPAM database. Please try again tomorrow :)
+    validation
+  We think you are a SPAM robot. please email us to resolve this issue.
+    validation
+  a website selection option is required
+    validation
+  You have already registered a Transition Initiative under this username. Please logout and re-register
+    validation
+  A Transition Initiative already exists with this name. Please add something to the name or change it and try again
+    validation
+  Oops, we didn't recieve your data. Please try again
+    usually only web robots get this message. it is a system error
+    validation
+  save and continue (>>)
+    BUTTON
+
+SCREEN #4 (summary entry):
+  summary
+  Your website was not found, please re-enter it or select none
+    validation
+  from the website
+    indicates that the summary has been initially filled out from the "about us" section on the associated website
+  complete registration (>>)
+    BUTTON
+    this is the last data-entry screen: system will redirect to a full view of the created profile when pressed
+
+REGISTRATION EMAIL
+  TransitionTowns registration service
+    the email "from" name
+  your new Transition account
+    email subject
+  welcome to Transition
+    in-email body title
+  here are your registration details
+  username
+  password
+  reply to this email with any thoughts / excitement / ideas / congratulations / bugs / other things :)
+
+ADMINISTRATION EMAIL (administrator only):
+  new Transition account registered
+    email subject
+  remainder of the email is identical to the user regiatration email
+
+ADMINISTRATION INTERFACE (administrator only):
+  No initiatives found in Trash.
+  No initiatives found.
+  Add New
+  IIRS import
+    page title
+  IIRS export
+    page title
+
+
+OTHER SCREENS ------------------------------------------------------------------
+LIST SCREEN:
+  view
+    link text next to TI posts to go to the full profile view screen
+    only necessary to translate if the IRS is controlling the list of TIs
+  edit
+    link text next to TI posts to go to the edit screen
+    appears only next to TIs that are owned by the current user
+    only necessary to translate if the IRS is controlling the list of TIs
+
+VIEW FULL PROFILE:
+  IIRS view
+    page title
+  website
+    "website" link (if there is one)
+  currently no website
+    full view of an initiative
+
+MAPPING:
+  IIRS mapping
+    page title
+  view full profile
+    marker link text
+  map of Transition Initiatives near you
+
+EDIT SCREEN:
+  IIRS edit
+    page title
+  setup editor
+    in-page title
+  your details
+  update account details
+  transition initiative details
+  change location
+  search
+  update transition initiative
+  login required to edit
+  There is no Initiative associated with this user
+
+  Login Failed
+    validation
+  Failed to update your user details. Please try again tomorrow.
+    validation
+  no towns found matching %%townname%% you will need to register by email because we cannot find your town on our maps system!
+    validation
+
+
+GENERAL and MISC ------------------------------------------------------------------
+Oops, Javascript failed to run, services unavailable, please go to
+  we should add an email address to this and ask them to email us?
+registrar@transitionnetwork.org
+  this is the email where error messages will go
+  translate to change!
+system error
+  validation
+(<<) back
+  validation
+  back button in the case of errors
+nice_tlds
+  this is a semi colon delimited list of Top Level Domains to search when looking for possible websites
+  see the IIRS settings screen for more information
+nice_domains
+  this is a semi colon delimited list of domain prefixes to search when looking for possible websites
+  see the IIRS settings screen for more information
+
+NOT CURRENTLY USED (do not translate now) ------------------------------------------------------------------
+  Could not find extended information about your website
+  search the transition towns of the world
+  add another thing
+  Your nearest Transition Town is only 4km away and we will connect them with you. They have budget, and have done loads of stuff. But you probably know that already do you? :)
+  description of thing
+  name of thing
+  project or idea thing
+  or upload
+  Loading Google images for
+  image
+  add ideas, summary, projects, descriptions so everyone can help and get advice
+  thankyou message
+  thanks
+  buy marked domains
+  stop being clever and just give me the domains
+  on to this domain and give me the keys
+  load
+  advanced settings
+  km
+  closest initiative
+  search
+  message
+  join!
+  transition initiative already registered
+  phone number
+  to register by email because we cannot find your town on Google Maps!
+  to manage your registration, NOT this website
+  you will need to log in to
+  finish
+  IIRS search
+    page title
+  IIRS list
+    page title

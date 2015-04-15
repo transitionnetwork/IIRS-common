@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <info><statusCode>0</statusCode><messages/><copyright><imageUrl>http://api.mqcdn.com/res/mqlogo.gif</imageUrl><imageAltText>© 2014 MapQuest, Inc.</imageAltText><text>© 2014 MapQuest, Inc.</text></copyright></info>
+  <results>
+    <result>
+      <providedLocation><location>bedford</location>
+</providedLocation>
+      <locations>
+        <location>
+          <street></street>
+          <adminArea5 type="City"></adminArea5>
+          <adminArea3 type="State">England</adminArea3>
+          <adminArea4 type="County">Bedford</adminArea4>
+          <postalCode></postalCode>
+          <adminArea1 type="Country">GB</adminArea1>
+          <geocodeQuality>COUNTY</geocodeQuality>
+          <geocodeQualityCode>A4XAX</geocodeQualityCode>
+          <dragPoint>false</dragPoint>
+          <sideOfStreet>N</sideOfStreet>
+          <displayLatLng><latLng><lat>52.136381</lat><lng>-0.467504</lng></latLng></displayLatLng>
+          <linkId>0</linkId>
+          <type>s</type>
+          <latLng><lat>52.136381</lat><lng>-0.467504</lng></latLng>
+          <mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-1,52.1363806,-0.4675041,0,0|&center=52.1363806,-0.4675041&zoom=9&rand=-1401187911]]></mapUrl>
+        </location>
+        <location><street></street><adminArea5 type="City"></adminArea5><adminArea3 type="State">PA</adminArea3><adminArea4 type="County">Bedford County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>COUNTY</geocodeQuality><geocodeQualityCode>A4XXX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>40.027145</lat><lng>-78.523745</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>40.027145</lat><lng>-78.523745</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-2,40.0271453,-78.5237447,0,0|&center=40.0271453,-78.5237447&zoom=9&rand=-1401187911]]></mapUrl></location>
+        <location><street></street><adminArea5 type="City">Bedford</adminArea5><adminArea3 type="State">IN</adminArea3><adminArea4 type="County">Lawrence County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>CITY</geocodeQuality><geocodeQualityCode>A5XAX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>38.861162</lat><lng>-86.487215</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>38.861162</lat><lng>-86.487215</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-3,38.8611619,-86.4872149,0,0|&center=38.8611619,-86.4872149&zoom=12&rand=-1401187911]]></mapUrl></location>
+        <location><street></street><adminArea5 type="City">Bedford</adminArea5><adminArea3 type="State">VA</adminArea3><adminArea4 type="County">Bedford County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>CITY</geocodeQuality><geocodeQualityCode>A5XAX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>37.334456</lat><lng>-79.523508</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>37.334456</lat><lng>-79.523508</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-4,37.3344561,-79.5235083,0,0|&center=37.3344561,-79.5235083&zoom=12&rand=-1401187911]]></mapUrl></location>
+        <location><street></street><adminArea5 type="City">Bedford</adminArea5><adminArea3 type="State">PA</adminArea3><adminArea4 type="County">Bedford County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>CITY</geocodeQuality><geocodeQualityCode>A5XAX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>40.018692</lat><lng>-78.503907</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>40.018692</lat><lng>-78.503907</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-5,40.0186921,-78.5039069,0,0|&center=40.0186921,-78.5039069&zoom=12&rand=-1401187911]]></mapUrl></location>
+        <location><street></street><adminArea5 type="City">Bedford</adminArea5><adminArea3 type="State">MA</adminArea3><adminArea4 type="County">Middlesex County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>CITY</geocodeQuality><geocodeQualityCode>A5XAX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>42.49065</lat><lng>-71.276169</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>42.49065</lat><lng>-71.276169</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-6,42.4906499,-71.2761686,0,0|&center=42.4906499,-71.2761686&zoom=12&rand=-1401187911]]></mapUrl></location>
+        <location><street></street><adminArea5 type="City">Bedford</adminArea5><adminArea3 type="State">NH</adminArea3><adminArea4 type="County">Hillsborough County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>CITY</geocodeQuality><geocodeQualityCode>A5XAX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>42.946474</lat><lng>-71.515902</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>42.946474</lat><lng>-71.515902</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-7,42.9464737,-71.5159015,0,0|&center=42.9464737,-71.5159015&zoom=12&rand=-1401187911]]></mapUrl></location>
+        <location><street></street><adminArea5 type="City">Bedford</adminArea5><adminArea3 type="State">TX</adminArea3><adminArea4 type="County">Tarrant County</adminArea4><postalCode></postalCode><adminArea1 type="Country">US</adminArea1><geocodeQuality>CITY</geocodeQuality><geocodeQualityCode>A5XAX</geocodeQualityCode><dragPoint>false</dragPoint><sideOfStreet>N</sideOfStreet><displayLatLng><latLng><lat>32.844854</lat><lng>-97.129589</lng></latLng></displayLatLng><linkId>0</linkId><type>s</type><latLng><lat>32.844854</lat><lng>-97.129589</lng></latLng><mapUrl><![CDATA[http://open.mapquestapi.com/staticmap/v4/getmap?key=Fmjtd|luu829uan1,8n=o5-9w1a9r&type=map&size=225,160&pois=purple-8,32.8448545,-97.1295888527662,0,0|&center=32.8448545,-97.1295888527662&zoom=12&rand=-1401187911]]></mapUrl></location>
+      </locations>
+    </result>
+  </results>
+  <options><maxResults>-1</maxResults><thumbMaps>true</thumbMaps><ignoreLatLngInput>false</ignoreLatLngInput><boundingBox/></options>
+</response>
